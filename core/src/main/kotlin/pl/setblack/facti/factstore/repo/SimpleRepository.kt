@@ -15,6 +15,11 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
+/**
+ * Simple repository implementation.
+ *
+ * Using given factstore, snapshot store.
+ */
 class SimpleRepository<ID, STATE, FACT : Fact<STATE>>(
         private val creator: (ID) -> STATE,
         private val factStore: FactStore<ID, FACT>,

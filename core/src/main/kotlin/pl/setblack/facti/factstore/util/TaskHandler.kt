@@ -7,11 +7,15 @@ import java.util.concurrent.Executors
 import io.vavr.collection.List
 import java.lang.IllegalStateException
 
+/**
+ * Task handler - an executor for IO tasks.
+ *
+ */
 interface TasksHandler {
     fun <T> putIOTask(id : String, task : (CompletableFuture<T>)->Unit) : Mono<T>
 }
 
-class SimpleTaskHandler(private val threads : Int = 1)  : TasksHandler {
+internal class SimpleTaskHandler(private val threads : Int = 1)  : TasksHandler {
     private val ioExecutors = initExecutors()
     override
       fun <T> putIOTask(id : String, task : (CompletableFuture<T>)->Unit) : Mono<T> {
