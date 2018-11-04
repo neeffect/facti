@@ -1,7 +1,7 @@
-package pl.setblack.factstore.bank.full
+package pl.setblack.facti.factstore.bank.full
 
 import io.vavr.control.Option
-import pl.setblack.factstore.Fact
+import pl.setblack.facti.factstore.Fact
 import java.math.BigDecimal
 
 class CBank {

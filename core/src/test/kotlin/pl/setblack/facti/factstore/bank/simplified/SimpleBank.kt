@@ -1,10 +1,9 @@
-package pl.setblack.factstore.bank.simplified
+package pl.setblack.facti.factstore.bank.simplified
 
 import io.vavr.Tuple
 import io.vavr.Tuple2
 import io.vavr.control.Either
-import pl.setblack.factstore.*
-import pl.setblack.factstore.file.BadRegistry
+import pl.setblack.facti.factstore.*
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.math.BigDecimal

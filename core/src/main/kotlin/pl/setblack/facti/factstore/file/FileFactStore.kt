@@ -1,12 +1,12 @@
-package pl.setblack.factstore.file
+package pl.setblack.facti.factstore.file
 
 import com.fasterxml.jackson.core.TreeNode
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.vavr.control.Option
-import pl.setblack.factstore.FactStore
-import pl.setblack.factstore.SavedFact
-import pl.setblack.factstore.util.TasksHandler
+import pl.setblack.facti.factstore.FactStore
+import pl.setblack.facti.factstore.SavedFact
+import pl.setblack.facti.factstore.util.TasksHandler
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.core.publisher.SynchronousSink
@@ -107,10 +107,10 @@ class FileFactStore<ID, FACT : Any>(
     private fun getExistingWriter(id: ID): Mono<Option<WritableDirState>> {
         val store = findAggregateStore(id, initial)
         return store.aggregatePath
-                .flatMap { aggregatePath ->
+                .flatMap {
                     store.dirdata.writeEventStream.map {
                         it.map {
-                            val storeWritable = findAggregateStore(id, initial)
+                            val storeWritable = findAggregateStore(id, initial) //TODO is this call is  needed?
                             WritableDirState(it, storeWritable)
                         }
                     }

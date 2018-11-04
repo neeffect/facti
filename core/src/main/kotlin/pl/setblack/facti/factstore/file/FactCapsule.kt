@@ -1,4 +1,4 @@
-package pl.setblack.factstore.file
+package pl.setblack.facti.factstore.file
 
 import com.fasterxml.jackson.databind.JsonNode
 import java.time.Instant

@@ -1,13 +1,13 @@
-package pl.setblack.factstore.files
+package pl.setblack.facti.factstore.files
 
 
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.DescribeSpec
 import io.vavr.collection.Array
-import pl.setblack.factstore.bank.simplified.MoneyTransfered
-import pl.setblack.factstore.bank.simplified.AccountFact
-import pl.setblack.factstore.file.FileFactStore
-import pl.setblack.factstore.util.SimpleTaskHandler
+import pl.setblack.facti.factstore.bank.simplified.MoneyTransfered
+import pl.setblack.facti.factstore.bank.simplified.AccountFact
+import pl.setblack.facti.factstore.file.FileFactStore
+import pl.setblack.facti.factstore.util.SimpleTaskHandler
 import reactor.core.publisher.Flux
 import reactor.core.publisher.toFlux
 import reactor.test.StepVerifier

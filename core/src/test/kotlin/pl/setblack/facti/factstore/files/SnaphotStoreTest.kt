@@ -1,14 +1,14 @@
-package pl.setblack.factstore.files
+package pl.setblack.facti.factstore.files
 
-import pl.setblack.factstore.file.FileSnapshotStore
+import pl.setblack.facti.factstore.file.FileSnapshotStore
 
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.DescribeSpec
-import pl.setblack.factstore.bank.simplified.SimpleAccount
-import pl.setblack.factstore.SavedState
-import pl.setblack.factstore.SnapshotData
-import pl.setblack.factstore.SnapshotStore
-import pl.setblack.factstore.util.SimpleTaskHandler
+import pl.setblack.facti.factstore.bank.simplified.SimpleAccount
+import pl.setblack.facti.factstore.SavedState
+import pl.setblack.facti.factstore.SnapshotData
+import pl.setblack.facti.factstore.SnapshotStore
+import pl.setblack.facti.factstore.util.SimpleTaskHandler
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 import java.math.BigDecimal

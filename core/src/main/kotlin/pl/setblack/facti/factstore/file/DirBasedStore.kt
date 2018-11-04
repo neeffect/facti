@@ -1,4 +1,4 @@
-package pl.setblack.factstore.file
+package pl.setblack.facti.factstore.file
 
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.core.JsonParser
@@ -8,8 +8,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.vavr.jackson.datatype.VavrModule
 import org.apache.commons.io.FileUtils
-import pl.setblack.factstore.IOManager
-import pl.setblack.factstore.util.TasksHandler
+import pl.setblack.facti.factstore.IOManager
+import pl.setblack.facti.factstore.util.TasksHandler
 import reactor.core.publisher.Mono
 import java.nio.file.Files
 import java.nio.file.Path

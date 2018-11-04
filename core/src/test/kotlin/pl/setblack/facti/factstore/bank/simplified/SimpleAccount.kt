@@ -1,6 +1,5 @@
-package pl.setblack.factstore.bank.simplified
+package pl.setblack.facti.factstore.bank.simplified
 
-import com.univocity.parsers.conversions.BigDecimalConversion
 import io.vavr.collection.Array
 import io.vavr.collection.Seq
 import java.math.BigDecimal

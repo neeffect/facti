@@ -1,14 +1,14 @@
-package pl.setblack.factstore.file
+package pl.setblack.facti.factstore.file
 
-import pl.setblack.factstore.SavedState
+import pl.setblack.facti.factstore.SavedState
 import com.fasterxml.jackson.core.TreeNode
 import com.fasterxml.jackson.databind.JsonNode
 import io.vavr.Tuple2
 import io.vavr.collection.Stream
 import io.vavr.control.Option
-import pl.setblack.factstore.SnapshotData
-import pl.setblack.factstore.SnapshotStore
-import pl.setblack.factstore.util.TasksHandler
+import pl.setblack.facti.factstore.SnapshotData
+import pl.setblack.facti.factstore.SnapshotStore
+import pl.setblack.facti.factstore.util.TasksHandler
 import reactor.core.publisher.Mono
 import java.nio.file.Files
 import java.nio.file.Path
@@ -43,7 +43,7 @@ class FileSnapshotStore<ID, STATE : Any>(
         val oldStore = findAggregateStore(id, initialState)//This repetition is also scary
         val snapshotNumber = oldStore.dirdata.nextSnapshotNumber
         val snapshotName = snapshotFileName(snapshotNumber)
-        val snapshot = SavedSnapshot(state.nextEvent, mapper.valueToTree(state.state), state.state.javaClass.name)
+        val snapshot = SavedSnapshot(state.nextFactSeq, mapper.valueToTree(state.state), state.state.javaClass.name)
         val newStore = oldStore.copy(dirdata = oldStore.dirdata.copy(nextSnapshotNumber = oldStore.dirdata.nextSnapshotNumber + 1))
         val replaced = this.aggregates.replace(id, oldStore, newStore)
         return if (replaced) {

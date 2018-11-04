@@ -1,4 +1,4 @@
-package pl.setblack.factstore
+package pl.setblack.facti.factstore
 
 import io.vavr.Tuple2
 import reactor.core.publisher.Flux

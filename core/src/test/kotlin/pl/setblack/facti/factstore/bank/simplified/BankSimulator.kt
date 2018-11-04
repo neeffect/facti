@@ -1,11 +1,7 @@
-package pl.setblack.factstore.bank.simplified
+package pl.setblack.facti.factstore.bank.simplified
 
 import com.google.common.base.Preconditions
-import pl.setblack.factstore.file.BadRegistry
-import pl.setblack.factstore.file.DebugSwin
-import pl.setblack.factstore.file.FileFactStore
-import pl.setblack.factstore.file.FileSnapshotStore
-import pl.setblack.factstore.repo.file.SimpleFileRepositoryFactory
+import pl.setblack.facti.factstore.repo.file.SimpleFileRepositoryFactory
 import reactor.core.publisher.Flux
 import java.math.BigDecimal
 import java.nio.file.Files
@@ -13,7 +9,6 @@ import java.time.Clock
 import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicLong
 
 class BankSimulator(
         val accounts: Int,

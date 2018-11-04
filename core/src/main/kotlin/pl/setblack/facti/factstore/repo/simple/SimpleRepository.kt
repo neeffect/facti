@@ -1,13 +1,11 @@
-package pl.setblack.factstore.repo.simple
+package pl.setblack.facti.factstore.repo.simple
 
 
 import io.vavr.control.Option
-import pl.setblack.factstore.*
-import pl.setblack.factstore.util.SimpleTaskHandler
-import pl.setblack.factstore.util.TasksHandler
+import pl.setblack.facti.factstore.*
+import pl.setblack.facti.factstore.util.TasksHandler
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
-import java.lang.IllegalStateException
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
@@ -54,7 +52,7 @@ class SimpleRepository<ID, STATE, FACT : Fact<STATE>>(
                     try {
                         val nextEvent = this.factStore.roll(id)
                         nextEvent.map {
-                            SnapshotData(aggregate.state, nextEvent = it)
+                            SnapshotData(aggregate.state, nextFactSeq = it)
                         }.flatMap {
                             this.snapshotStore.snapshot(id, it)
                         }.subscribe( {
@@ -101,7 +99,7 @@ class SimpleRepository<ID, STATE, FACT : Fact<STATE>>(
                 val state = Aggregate(saved.state)
                 val before = this.objects.putIfAbsent(id, state )
                 if (before == null) {
-                    val facts = loadStoredFacts(id, saved.nextEvent)
+                    val facts = loadStoredFacts(id, saved.nextFactSeq)
                     val newState = updateTransientAggregate(id, facts, state)
                     newState.map {
                         markLoaded(id, it)

@@ -1,4 +1,4 @@
-package pl.setblack.factstore
+package pl.setblack.facti.factstore
 
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -22,4 +22,4 @@ data class SavedFact(val thisFactIndex : Long)
 
 data class SavedState<STATE>(val snapshotIndex : Long, val state : STATE)
 
-data class SnapshotData<STATE>(val state: STATE, val nextEvent : Long = 0)
+data class SnapshotData<STATE>(val state: STATE, val nextFactSeq : Long = 0)

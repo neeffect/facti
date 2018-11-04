@@ -1,18 +1,17 @@
-package pl.setblack.factstore.repo
+package pl.setblack.facti.factstore.repo
 
 
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.DescribeSpec
 import io.vavr.collection.Array
-import pl.setblack.factstore.bank.simplified.AccountFact
-import pl.setblack.factstore.bank.simplified.DepositMoney
-import pl.setblack.factstore.bank.simplified.ReadAccount
-import pl.setblack.factstore.bank.simplified.SimpleAccount
-import pl.setblack.factstore.file.FileFactStore
-import pl.setblack.factstore.file.FileSnapshotStore
-import pl.setblack.factstore.repo.simple.AggregateSaved
-import pl.setblack.factstore.repo.simple.SimpleRepository
-import pl.setblack.factstore.util.SimpleTaskHandler
+import pl.setblack.facti.factstore.bank.simplified.AccountFact
+import pl.setblack.facti.factstore.bank.simplified.DepositMoney
+import pl.setblack.facti.factstore.bank.simplified.ReadAccount
+import pl.setblack.facti.factstore.bank.simplified.SimpleAccount
+import pl.setblack.facti.factstore.file.FileFactStore
+import pl.setblack.facti.factstore.file.FileSnapshotStore
+import pl.setblack.facti.factstore.repo.simple.SimpleRepository
+import pl.setblack.facti.factstore.util.SimpleTaskHandler
 import reactor.core.publisher.Flux
 import reactor.test.StepVerifier
 import java.math.BigDecimal

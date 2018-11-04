@@ -1,12 +1,10 @@
-package pl.setblack.factstore.util
+package pl.setblack.facti.factstore.util
 
 import io.vavr.Tuple
-import io.vavr.Tuple2
 import reactor.core.publisher.Mono
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
 import io.vavr.collection.List
-import io.vavr.kotlin.getOrNull
 import java.lang.IllegalStateException
 
 interface TasksHandler {
