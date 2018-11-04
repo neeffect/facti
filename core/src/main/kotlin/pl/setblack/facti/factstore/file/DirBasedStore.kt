@@ -66,7 +66,6 @@ open class DirBasedStore<ID, DIRDATA>(
     }
 
     override fun shutdown() {
-        println("clearing bo...")
         this.aggregates.clear()//flush streams
     }
 
@@ -93,7 +92,6 @@ data class DirState<DIRDATA>(
 object DebugSwin {
     fun debug() {
         debugStore.values.forEach {
-            println("**************")
             it.whereCreated.printStackTrace()
         }
     }
