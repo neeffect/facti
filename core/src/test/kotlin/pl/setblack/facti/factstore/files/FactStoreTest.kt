@@ -18,7 +18,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 
-class FactStoreTest : DescribeSpec({
+internal class FactStoreTest : DescribeSpec({
 
     describe("for an fact store in a temp folder ") {
         val timeZone = TimeZone.getTimeZone("GMT+0:00")

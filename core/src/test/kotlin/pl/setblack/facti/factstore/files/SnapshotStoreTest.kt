@@ -21,7 +21,7 @@ import java.util.*
 const val mainAccountId = "irreg1"
 const val otherAccountId = "ot\nhe\n\rr"
 
-class SnaphotStoreTest : DescribeSpec({
+internal class SnapshotStoreTest : DescribeSpec({
 
     describe("for an event store in a temp folder ") {
         val timeZone = TimeZone.getTimeZone("GMT+0:00")
@@ -97,7 +97,7 @@ class SnaphotStoreTest : DescribeSpec({
 })
 
 
-fun prepareTwoSnaphotsCase(snapshotStore: SnapshotStore<String, SimpleAccount>): Mono<SavedState<SimpleAccount>> {
+internal fun prepareTwoSnaphotsCase(snapshotStore: SnapshotStore<String, SimpleAccount>): Mono<SavedState<SimpleAccount>> {
     val account1 = SimpleAccount(mainAccountId, BigDecimal.valueOf(42))
     val account2 = SimpleAccount(otherAccountId, BigDecimal.valueOf(62))
     val snapshot1 = snapshotStore.snapshot(mainAccountId, SnapshotData(account1))

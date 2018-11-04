@@ -22,7 +22,7 @@ import java.util.*
 const val czeslawAccountId = "konto_czeslawa"
 const val krzybiuAccountId = "konto_krzybia"
 
-class SimpleRepositoryTest : DescribeSpec({
+internal class SimpleRepositoryTest : DescribeSpec({
     describe("simple accounts repository") {
         val timeZone = TimeZone.getTimeZone("GMT+0:00")
         val initialTime = LocalDateTime.parse("2018-10-01T10:00")
