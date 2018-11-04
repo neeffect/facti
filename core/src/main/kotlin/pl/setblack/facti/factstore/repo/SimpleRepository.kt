@@ -35,9 +35,9 @@ class SimpleRepository<ID, STATE, FACT : Fact<STATE>>(
         }
     }
 
-    override fun <R> query(id: ID, q: Command<STATE, FACT, R>): Flux<R> =
+    override fun <R> query(id: ID, q: Query<STATE, FACT, R>): Flux<R> =
             loadAggregate(id).flatMapMany {
-                q.apply(it.state)._1(it.state)
+                q.query(it.state)
             }
 
     override fun snapshot(id: ID): Mono<STATE> {
