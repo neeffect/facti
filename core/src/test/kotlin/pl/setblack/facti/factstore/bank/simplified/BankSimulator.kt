@@ -1,7 +1,7 @@
 package pl.setblack.facti.factstore.bank.simplified
 
 import com.google.common.base.Preconditions
-import pl.setblack.facti.factstore.repo.file.SimpleFileRepositoryFactory
+import pl.setblack.facti.factstore.repo.SimpleFileRepositoryFactory
 import reactor.core.publisher.Flux
 import java.math.BigDecimal
 import java.nio.file.Files

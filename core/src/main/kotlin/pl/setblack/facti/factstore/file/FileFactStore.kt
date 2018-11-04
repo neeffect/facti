@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.TreeNode
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.vavr.control.Option
-import pl.setblack.facti.factstore.FactStore
-import pl.setblack.facti.factstore.SavedFact
+import pl.setblack.facti.factstore.repo.FactStore
+import pl.setblack.facti.factstore.repo.SavedFact
 import pl.setblack.facti.factstore.util.TasksHandler
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono

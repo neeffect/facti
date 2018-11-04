@@ -8,7 +8,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.vavr.jackson.datatype.VavrModule
 import org.apache.commons.io.FileUtils
-import pl.setblack.facti.factstore.repo.IOManager
+import pl.setblack.facti.factstore.repo.DirectControl
 import pl.setblack.facti.factstore.util.TasksHandler
 import reactor.core.publisher.Mono
 import java.nio.file.Files
@@ -21,7 +21,7 @@ import java.util.concurrent.locks.ReentrantLock
 open class DirBasedStore<ID, DIRDATA>(
         protected val basePath: Path,
         protected val clock: Clock,
-        protected val tasksHandler: TasksHandler): IOManager {
+        protected val tasksHandler: TasksHandler): DirectControl {
     protected val aggregates = ConcurrentHashMap<ID, DirState<DIRDATA>>()
 
 

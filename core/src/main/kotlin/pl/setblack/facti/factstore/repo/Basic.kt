@@ -1,8 +1,11 @@
-package pl.setblack.facti.factstore
+package pl.setblack.facti.factstore.repo
 
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
+/**
+ * Definition for every factstore.
+ */
 interface FactStore<ID, FACT> {
     fun persist(id: ID, ev: FACT): Mono<SavedFact>
 
@@ -11,6 +14,9 @@ interface FactStore<ID, FACT> {
     fun roll(id: ID): Mono<Long>
 }
 
+/**
+ * Definition for every snapshotstore.
+ */
 interface SnapshotStore<ID, STATE> {
 
     fun restore(id: ID, supplier: (ID) -> Mono<STATE>): Mono<SnapshotData<STATE>>

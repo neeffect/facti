@@ -7,7 +7,7 @@ import pl.setblack.facti.factstore.Command
 import pl.setblack.facti.factstore.Fact
 import pl.setblack.facti.factstore.Query
 import pl.setblack.facti.factstore.Repository
-import pl.setblack.facti.factstore.repo.IOManager
+import pl.setblack.facti.factstore.repo.DirectControl
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.math.BigDecimal
@@ -41,7 +41,7 @@ class SimpleBank(val  repo : Repository<String, SimpleAccount, AccountFact>) {
     }
 
     fun reload() {
-        if (repo is IOManager) {
+        if (repo is DirectControl) {
             repo.restart()
         }
     }
@@ -112,6 +112,7 @@ object ReadAccount : AccountQuery<SimpleAccount>() {
     override fun query(stateBefore: SimpleAccount): Flux<SimpleAccount> {
         return Mono.just(stateBefore).flux()
     }
+
 }
 
 

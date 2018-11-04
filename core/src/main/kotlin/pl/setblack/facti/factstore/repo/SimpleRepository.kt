@@ -3,9 +3,14 @@ package pl.setblack.facti.factstore.repo
 
 import io.vavr.control.Option
 import pl.setblack.facti.factstore.*
+import pl.setblack.facti.factstore.file.FileFactStore
+import pl.setblack.facti.factstore.file.FileSnapshotStore
+import pl.setblack.facti.factstore.util.SimpleTaskHandler
 import pl.setblack.facti.factstore.util.TasksHandler
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.nio.file.Path
+import java.time.Clock
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
@@ -15,7 +20,7 @@ class SimpleRepository<ID, STATE, FACT : Fact<STATE>>(
         private val factStore: FactStore<ID, FACT>,
         private val snapshotStore: SnapshotStore<ID, STATE>,
         private val tasksHandler: TasksHandler
-) : Repository<ID, STATE, FACT>, IOManager {
+) : Repository<ID, STATE, FACT>, DirectControl {
 
     private val objects = ConcurrentHashMap<ID, Aggregate<STATE>>()
 
@@ -23,8 +28,8 @@ class SimpleRepository<ID, STATE, FACT : Fact<STATE>>(
 
         val beforeState = loadAggregate(id)
 
-        return beforeState.flatMapMany {aggregate ->
-            assert (aggregate.loaded)
+        return beforeState.flatMapMany { aggregate ->
+            assert(aggregate.loaded)
             val commandResult = command.apply(aggregate.state)
             val resultProcessor = commandResult._1
             val facts = commandResult._2
@@ -46,23 +51,23 @@ class SimpleRepository<ID, STATE, FACT : Fact<STATE>>(
         return aggregateOp.flatMap { aggregate ->
             val dataToSave = SnapshotData(aggregate.state)
 
-            tasksHandler.putIOTask<STATE> (java.lang.String.valueOf(id)){ completableFuture ->
+            tasksHandler.putIOTask<STATE>(java.lang.String.valueOf(id)) { completableFuture ->
                 val locked = aggregate.rollLock.tryLock()
-                if ( locked) {
+                if (locked) {
                     try {
                         val nextEvent = this.factStore.roll(id)
                         nextEvent.map {
                             SnapshotData(aggregate.state, nextFactSeq = it)
                         }.flatMap {
                             this.snapshotStore.snapshot(id, it)
-                        }.subscribe( {
+                        }.subscribe({
                             completableFuture.complete(dataToSave.state)
-                        }, {completableFuture.completeExceptionally(it)})
+                        }, { completableFuture.completeExceptionally(it) })
                     } finally {
                         aggregate.rollLock.unlock()
                     }
                 } else {
-                    snapshot(id).subscribe ({ completableFuture.complete(it)} ,{completableFuture.completeExceptionally(it)})
+                    snapshot(id).subscribe({ completableFuture.complete(it) }, { completableFuture.completeExceptionally(it) })
                 }
             }
 
@@ -71,7 +76,7 @@ class SimpleRepository<ID, STATE, FACT : Fact<STATE>>(
 
     }
 
-    private fun loadStoredFacts(id: ID, offset : Long): Flux<FACT>  {
+    private fun loadStoredFacts(id: ID, offset: Long): Flux<FACT> {
         return Mono.defer { ->
             Mono.just(1)
         }.flatMapMany {
@@ -83,7 +88,7 @@ class SimpleRepository<ID, STATE, FACT : Fact<STATE>>(
         }
     }
 
-    private fun isLoaded(id : ID) : Boolean{
+    private fun isLoaded(id: ID): Boolean {
         return this.objects[id]?.loaded ?: false
     }
 
@@ -92,12 +97,12 @@ class SimpleRepository<ID, STATE, FACT : Fact<STATE>>(
         if (this.objects.containsKey(id)) {
             return Mono.just(this.objects[id]!!)
         } else {
-            val snapshot = snapshotStore.restore(id){ anId ->
+            val snapshot = snapshotStore.restore(id) { anId ->
                 Mono.just(creator(anId))
             }
-            return snapshot.flatMap {saved ->
+            return snapshot.flatMap { saved ->
                 val state = Aggregate(saved.state)
-                val before = this.objects.putIfAbsent(id, state )
+                val before = this.objects.putIfAbsent(id, state)
                 if (before == null) {
                     val facts = loadStoredFacts(id, saved.nextFactSeq)
                     val newState = updateTransientAggregate(id, facts, state)
@@ -113,7 +118,7 @@ class SimpleRepository<ID, STATE, FACT : Fact<STATE>>(
         }
     }
 
-    private fun markLoaded(id: ID, oldState: Aggregate<STATE>) : Aggregate<STATE> {
+    private fun markLoaded(id: ID, oldState: Aggregate<STATE>): Aggregate<STATE> {
         val loaded = oldState.copy(loaded = true)
         if (!this.objects.replace(id, oldState, loaded)) {
             TODO("handling evil changes!")
@@ -124,10 +129,10 @@ class SimpleRepository<ID, STATE, FACT : Fact<STATE>>(
 
     override
     fun deleteAll() {
-        if (factStore is IOManager) {
+        if (factStore is DirectControl) {
             factStore.deleteAll()
         }
-        if (snapshotStore is IOManager) {
+        if (snapshotStore is DirectControl) {
             snapshotStore.deleteAll()
         }
         shutdown()
@@ -139,16 +144,16 @@ class SimpleRepository<ID, STATE, FACT : Fact<STATE>>(
 
     override
     fun shutdown() {
-        if (factStore is IOManager) {
+        if (factStore is DirectControl) {
             factStore.shutdown()
         }
-        if (snapshotStore is IOManager) {
+        if (snapshotStore is DirectControl) {
             snapshotStore.shutdown()
         }
         this.objects.clear()
     }
 
-    private fun processSingleFact(id: ID, fact: FACT, beforeState : Aggregate<STATE>): Mono<Option<FACT>> {
+    private fun processSingleFact(id: ID, fact: FACT, beforeState: Aggregate<STATE>): Mono<Option<FACT>> {
 
         return factStore.persist(id, fact)
                 .map {
@@ -156,20 +161,19 @@ class SimpleRepository<ID, STATE, FACT : Fact<STATE>>(
                 }
     }
 
-    private fun updateAggregate(id: ID, facts: Flux<FACT>, beforeState : Aggregate<STATE>): Mono<Aggregate<STATE>> =
+    private fun updateAggregate(id: ID, facts: Flux<FACT>, beforeState: Aggregate<STATE>): Mono<Aggregate<STATE>> =
             facts.flatMap {
                 processSingleFact(id, it, beforeState)
             }.last(Option.none()).flatMap {
-                val newState = getAggregate(id ,beforeState)
+                val newState = getAggregate(id, beforeState)
                 Mono.just(newState)
             }
 
 
-    private fun getAggregate(id: ID, beforeState : Aggregate<STATE>)
-            = this.objects.computeIfAbsent(id){ beforeState}
+    private fun getAggregate(id: ID, beforeState: Aggregate<STATE>) = this.objects.computeIfAbsent(id) { beforeState }
 
 
-    private fun processSingleTransientFact(id: ID, fact: FACT, defaultState : Aggregate<STATE>): Option<FACT> {
+    private fun processSingleTransientFact(id: ID, fact: FACT, defaultState: Aggregate<STATE>): Option<FACT> {
         val before = getAggregate(id, defaultState)
         before.rollLock.withLock {
             val newState = fact.apply(before.state)
@@ -179,15 +183,15 @@ class SimpleRepository<ID, STATE, FACT : Fact<STATE>>(
             val replaced = this.objects.replace(id, before, toStore)
             return if (replaced) {
                 //processSingleTransientFact(id, fact)
-               Option.of(fact)
+                Option.of(fact)
             } else {
-               processSingleTransientFact(id, fact, defaultState)
+                processSingleTransientFact(id, fact, defaultState)
             }
         }
 
     }
 
-    private fun updateTransientAggregate(id: ID, facts: Flux<FACT>, defaultState : Aggregate<STATE>): Mono<Aggregate<STATE>> =
+    private fun updateTransientAggregate(id: ID, facts: Flux<FACT>, defaultState: Aggregate<STATE>): Mono<Aggregate<STATE>> =
             facts.map {
                 processSingleTransientFact(id, it, defaultState)
             }.last(Option.none()).flatMap {
@@ -199,18 +203,38 @@ class SimpleRepository<ID, STATE, FACT : Fact<STATE>>(
 }
 
 
-data class AggregateSaved<STATE>(val saved: STATE, val nextEvent: Long = 0)
-//causes error
 data class Aggregate<STATE>(
         val state: STATE,
         val loaded: Boolean = false,
         val rollLock: ReentrantLock = ReentrantLock()) {
-  //  fun withState(newState: STATE) = this.copy( state = newState)
-    fun withState(newState: STATE)  : Aggregate<STATE> {
+
+    fun withState(newState: STATE): Aggregate<STATE> {
         val res = this.copy(state = newState)
         return res
     }
 }
 
 
+/**
+ * TODO - use clock by denek
+ */
+class SimpleFileRepositoryFactory<ID, STATE : Any, FACT : Fact<STATE>>(
+        private val creator: (ID) -> STATE,
+        val basePath: Path,
+        val clock: Clock) {
 
+    fun create(): Repository<ID, STATE, FACT> {
+        val tasksHandler = SimpleTaskHandler(3)
+
+        val factStore = FileFactStore<ID, FACT>(basePath, clock, tasksHandler)
+        val snapshotStore = FileSnapshotStore<ID, STATE>(basePath, clock, tasksHandler)
+
+        return SimpleRepository(
+                creator,
+                factStore,
+                snapshotStore,
+                tasksHandler
+        )
+
+    }
+}

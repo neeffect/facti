@@ -5,9 +5,9 @@ import pl.setblack.facti.factstore.file.FileSnapshotStore
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.DescribeSpec
 import pl.setblack.facti.factstore.bank.simplified.SimpleAccount
-import pl.setblack.facti.factstore.SavedState
-import pl.setblack.facti.factstore.SnapshotData
-import pl.setblack.facti.factstore.SnapshotStore
+import pl.setblack.facti.factstore.repo.SavedState
+import pl.setblack.facti.factstore.repo.SnapshotData
+import pl.setblack.facti.factstore.repo.SnapshotStore
 import pl.setblack.facti.factstore.util.SimpleTaskHandler
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
@@ -57,7 +57,7 @@ class SnaphotStoreTest : DescribeSpec({
         context("snapshot") {
             snapshotStore.deleteAll()
             val account = SimpleAccount(mainAccountId, BigDecimal.valueOf(42))
-            val snapshot = snapshotStore.snapshot(mainAccountId, SnapshotData( account))
+            val snapshot = snapshotStore.snapshot(mainAccountId, SnapshotData(account))
             it("snapshot should be made") {
                 StepVerifier.create(snapshot)
                         .expectNextCount(1)

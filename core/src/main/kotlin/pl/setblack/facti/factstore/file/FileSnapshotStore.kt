@@ -1,13 +1,13 @@
 package pl.setblack.facti.factstore.file
 
-import pl.setblack.facti.factstore.SavedState
+import pl.setblack.facti.factstore.repo.SavedState
 import com.fasterxml.jackson.core.TreeNode
 import com.fasterxml.jackson.databind.JsonNode
 import io.vavr.Tuple2
 import io.vavr.collection.Stream
 import io.vavr.control.Option
-import pl.setblack.facti.factstore.SnapshotData
-import pl.setblack.facti.factstore.SnapshotStore
+import pl.setblack.facti.factstore.repo.SnapshotData
+import pl.setblack.facti.factstore.repo.SnapshotStore
 import pl.setblack.facti.factstore.util.TasksHandler
 import reactor.core.publisher.Mono
 import java.nio.file.Files
@@ -18,7 +18,7 @@ class FileSnapshotStore<ID, STATE : Any>(
         basePath: Path,
         clock: Clock,
         tasksHandler: TasksHandler) :
-        DirBasedStore<ID, SnapshotDir>(basePath, clock, tasksHandler), SnapshotStore<ID, STATE>  {
+        DirBasedStore<ID, SnapshotDir>(basePath, clock, tasksHandler), SnapshotStore<ID, STATE> {
 
     private val snapshotPrefix = "snapshot_"
 
@@ -29,7 +29,7 @@ class FileSnapshotStore<ID, STATE : Any>(
         return readLastSnapshot(id).flatMap { maybeSnapshot ->
             maybeSnapshot.map { Mono.just(it) }
                     .getOrElse {
-                        supplier(id).map { SnapshotData( it) }
+                        supplier(id).map { SnapshotData(it) }
                     }
         }
     }
@@ -86,7 +86,7 @@ class FileSnapshotStore<ID, STATE : Any>(
                     reader.close()
                     val stateClass = Class.forName(savedSnapshot.stateClass)
                     val state = mapper.treeToValue(savedSnapshot.state as TreeNode, stateClass)
-                    SnapshotData(state, savedSnapshot.nextEventId)  as SnapshotData<STATE>
+                    SnapshotData(state, savedSnapshot.nextEventId) as SnapshotData<STATE>
                     /*
                     TODO it was for events only
                     val newStore = store
