@@ -10,7 +10,6 @@ import pl.setblack.facti.factstore.bank.simplified.ReadAccount
 import pl.setblack.facti.factstore.bank.simplified.SimpleAccount
 import pl.setblack.facti.factstore.file.FileFactStore
 import pl.setblack.facti.factstore.file.FileSnapshotStore
-import pl.setblack.facti.factstore.repo.simple.SimpleRepository
 import pl.setblack.facti.factstore.util.SimpleTaskHandler
 import reactor.core.publisher.Flux
 import reactor.test.StepVerifier

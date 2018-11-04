@@ -1,4 +1,4 @@
-package pl.setblack.facti.factstore.repo.simple
+package pl.setblack.facti.factstore.repo
 
 
 import io.vavr.control.Option
@@ -206,23 +206,11 @@ data class Aggregate<STATE>(
         val loaded: Boolean = false,
         val rollLock: ReentrantLock = ReentrantLock()) {
   //  fun withState(newState: STATE) = this.copy( state = newState)
-    fun withState(newState: STATE)  :Aggregate<STATE>  {
+    fun withState(newState: STATE)  : Aggregate<STATE> {
         val res = this.copy(state = newState)
         return res
     }
 }
-
-//data class Aggregate<STATE>(
-//        val state: STATE,
-//        val loaded: Boolean,
-//        val rollLock: ReentrantLock) {
-//
-//    constructor(state: STATE, loaded: Boolean = false) : this(state, loaded, ReentrantLock())
-//
-//    fun withState(newState: STATE) = this.copy(state = newState)
-//
-//
-//}
 
 
 

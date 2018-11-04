@@ -1,4 +1,4 @@
-package pl.setblack.facti.factstore
+package pl.setblack.facti.factstore.repo
 
 interface IOManager {
 

@@ -3,7 +3,11 @@ package pl.setblack.facti.factstore.bank.simplified
 import io.vavr.Tuple
 import io.vavr.Tuple2
 import io.vavr.control.Either
-import pl.setblack.facti.factstore.*
+import pl.setblack.facti.factstore.Command
+import pl.setblack.facti.factstore.Fact
+import pl.setblack.facti.factstore.Query
+import pl.setblack.facti.factstore.Repository
+import pl.setblack.facti.factstore.repo.IOManager
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.math.BigDecimal
