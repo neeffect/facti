@@ -20,9 +20,9 @@ import kotlin.concurrent.withLock
  *
  * Using given factstore, snapshot store.
  */
-class SimpleRepository<ID, STATE, FACT : Fact<STATE>>(
+class SimpleRepository<ID, STATE, FACT : Fact<STATE>, IDFACT>(
         private val creator: (ID) -> STATE,
-        private val factStore: FactStore<ID, FACT>,
+        private val factStore: FactStore<ID, FACT, IDFACT>,
         private val snapshotStore: SnapshotStore<ID, STATE>,
         private val tasksHandler: TasksHandler
 ) : Repository<ID, STATE, FACT>, DirectControl {

@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.TreeNode
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.vavr.control.Option
+import pl.setblack.facti.factstore.Fact
 import pl.setblack.facti.factstore.repo.FactStore
+import pl.setblack.facti.factstore.repo.LoadedFact
 import pl.setblack.facti.factstore.repo.SavedFact
 import pl.setblack.facti.factstore.util.TasksHandler
 import reactor.core.publisher.Flux
@@ -24,15 +26,15 @@ import java.util.function.Consumer
 /**
  * TODO -  not tests for flushing stream events upon shutdown()
  */
-class FileFactStore<ID, FACT : Any>(
+class FileFactStore<ID, FACT : Fact<*>>(
         basePath: Path,
         clock: Clock,
         tasksHandler: TasksHandler) : DirBasedStore<ID, EventDir>
-(basePath, clock, tasksHandler), FactStore<ID, FACT> {
+(basePath, clock, tasksHandler), FactStore<ID, FACT, Unit> {
     private val initial = EventDir()
 
     //ook
-    override fun persist(id: ID, ev: FACT): Mono<SavedFact> = Mono.defer {
+    override fun persist(id: ID, ev: FACT): Mono<SavedFact<Unit>> = Mono.defer {
         ensureEventWriter(id).flatMap { writableStore ->
             //val eventString = mapper.writeValueAsString(ev)
             val factNode : JsonNode= mapper.valueToTree(ev)
@@ -102,6 +104,10 @@ class FileFactStore<ID, FACT : Any>(
                 }
             }
         }
+    }
+
+    override fun loadAll(lastFact: Unit): Flux<LoadedFact<ID, FACT>> {
+        TODO("loadAll not implemented")
     }
 
     private fun getExistingWriter(id: ID): Mono<Option<WritableDirState>> {
@@ -193,8 +199,8 @@ class FileFactStore<ID, FACT : Any>(
         }
     }
 
-    private fun tryWrite(id: ID, factNode: JsonNode, eventClass: String, trials: Int, currentState: DirState<EventDir>, writer: Writer): Mono<SavedFact> {
-        return this.tasksHandler.putIOTask<SavedFact>(idString(id)) { completion ->
+    private fun tryWrite(id: ID, factNode: JsonNode, eventClass: String, trials: Int, currentState: DirState<EventDir>, writer: Writer): Mono<SavedFact<Unit>> {
+        return this.tasksHandler.putIOTask<SavedFact<Unit>>(idString(id)) { completion ->
             val eventId = currentState.dirdata.nextEventNumber
 
             val newState = currentState.copy(
@@ -208,7 +214,7 @@ class FileFactStore<ID, FACT : Any>(
                     if (replaced) {
                         val capsule = FactCapsule(eventId, clock.instant(), factNode, eventClass)
                         writeData(writer, capsule)
-                        completion.complete(SavedFact(eventId))
+                        completion.complete(SavedFact(eventId, Unit))
                         return@putIOTask
                     } else {
                         //println("small disaster for ${id} @ ${trials}")

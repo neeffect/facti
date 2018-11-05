@@ -37,6 +37,8 @@ interface Repository<ID, STATE, FACT : Fact<STATE>> {
      * @return state of a saved aggregate
      */
     fun snapshot(id: ID) : Mono<STATE>
+
+
 }
 
 
