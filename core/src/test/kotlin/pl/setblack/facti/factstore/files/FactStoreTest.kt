@@ -6,6 +6,7 @@ import io.kotlintest.specs.DescribeSpec
 import io.vavr.collection.Array
 import pl.setblack.facti.factstore.bank.simplified.MoneyTransfered
 import pl.setblack.facti.factstore.bank.simplified.AccountFact
+import pl.setblack.facti.factstore.bank.simplified.identity
 import pl.setblack.facti.factstore.file.FileFactStore
 import pl.setblack.facti.factstore.util.SimpleTaskHandler
 import reactor.core.publisher.Flux
@@ -26,7 +27,7 @@ internal class FactStoreTest : DescribeSpec({
         val clock = Clock.fixed(initialTime.atZone(timeZone.toZoneId()).toInstant(), timeZone.toZoneId())
         val tmpDir = Files.createTempDirectory("facti-filestore-test")
         val tasksHandler = SimpleTaskHandler()
-        val factStore = FileFactStore<String, AccountFact>(tmpDir, clock, tasksHandler)
+        val factStore = FileFactStore<String, AccountFact>(tmpDir, clock, tasksHandler, identity)
 
         context("persist event") {
             factStore.deleteAll()
@@ -112,6 +113,14 @@ internal class FactStoreTest : DescribeSpec({
                 factStore.shutdown()
                 val restored = factStore.loadFacts(mainAccountId, 0)
                 StepVerifier.create(restored).expectNextCount(12).verifyComplete()
+            }
+
+            it ("should read all for the readsides") {
+                factStore.shutdown()
+                val restored = factStore.loadFacts(mainAccountId, 0)
+                restored.blockLast()
+                var loaded  = factStore.loadAll(Unit)
+                StepVerifier.create(loaded).expectNextCount(12).verifyComplete()
             }
         }
 

@@ -4,10 +4,7 @@ package pl.setblack.facti.factstore.repo
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.DescribeSpec
 import io.vavr.collection.Array
-import pl.setblack.facti.factstore.bank.simplified.AccountFact
-import pl.setblack.facti.factstore.bank.simplified.DepositMoney
-import pl.setblack.facti.factstore.bank.simplified.ReadAccount
-import pl.setblack.facti.factstore.bank.simplified.SimpleAccount
+import pl.setblack.facti.factstore.bank.simplified.*
 import pl.setblack.facti.factstore.file.FileFactStore
 import pl.setblack.facti.factstore.file.FileSnapshotStore
 import pl.setblack.facti.factstore.util.SimpleTaskHandler
@@ -29,7 +26,7 @@ internal class SimpleRepositoryTest : DescribeSpec({
         val clock = Clock.fixed(initialTime.atZone(timeZone.toZoneId()).toInstant(), timeZone.toZoneId())
         val tmpDir = Files.createTempDirectory("facti-repo-test")
         val tasksHandler = SimpleTaskHandler()
-        val factStore = FileFactStore<String, AccountFact>(tmpDir, clock, tasksHandler )
+        val factStore = FileFactStore<String, AccountFact>(tmpDir, clock, tasksHandler , identity)
         val snapshotStore = FileSnapshotStore<String, SimpleAccount>(tmpDir, clock, tasksHandler)
 
         val simpleRepository = SimpleRepository(

@@ -226,12 +226,13 @@ data class Aggregate<STATE>(
 class SimpleFileRepositoryFactory<ID, STATE : Any, FACT : Fact<STATE>>(
         private val creator: (ID) -> STATE,
         val basePath: Path,
-        val clock: Clock) {
+        val clock: Clock,
+        val idFromString: (String) -> ID) {
 
     fun create(): Repository<ID, STATE, FACT> {
         val tasksHandler = SimpleTaskHandler(3)
 
-        val factStore = FileFactStore<ID, FACT>(basePath, clock, tasksHandler)
+        val factStore = FileFactStore<ID, FACT>(basePath, clock, tasksHandler,   idFromString)
         val snapshotStore = FileSnapshotStore<ID, STATE>(basePath, clock, tasksHandler)
 
         return SimpleRepository(
@@ -243,3 +244,4 @@ class SimpleFileRepositoryFactory<ID, STATE : Any, FACT : Fact<STATE>>(
 
     }
 }
+

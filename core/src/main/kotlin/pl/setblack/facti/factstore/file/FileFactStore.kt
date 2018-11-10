@@ -29,7 +29,8 @@ import java.util.function.Consumer
 class FileFactStore<ID, FACT : Fact<*>>(
         basePath: Path,
         clock: Clock,
-        tasksHandler: TasksHandler) : DirBasedStore<ID, EventDir>
+        tasksHandler: TasksHandler,
+        val idFromString : (String)-> ID) : DirBasedStore<ID, EventDir>
 (basePath, clock, tasksHandler), FactStore<ID, FACT, Unit> {
     private val initial = EventDir()
 
@@ -107,7 +108,18 @@ class FileFactStore<ID, FACT : Fact<*>>(
     }
 
     override fun loadAll(lastFact: Unit): Flux<LoadedFact<ID, FACT>> {
-        TODO("loadAll not implemented")
+        val directories =  Files.newDirectoryStream(basePath) {
+            path -> Files.isDirectory(path)
+
+        }
+        val factStream = directories.map {
+            val aggrgateFolderName = it.fileName.toString()
+            val aggegrateID = idFromString(aggrgateFolderName)
+            loadFacts(aggegrateID, 0).map {
+                LoadedFact(aggegrateID, it)
+            }
+        }
+        return Flux.concat(factStream)
     }
 
     private fun getExistingWriter(id: ID): Mono<Option<WritableDirState>> {
@@ -315,8 +327,6 @@ internal class EventsReader<EVENT>(
     override fun accept(sink: SynchronousSink<EVENT>) {
         state = state.flatMap { it.next(sink) }
     }
-
-
 }
 
 internal sealed class InternalState<EVENT>(
@@ -345,8 +355,6 @@ internal sealed class InternalState<EVENT>(
             return newState.next(sink)
         }
     }
-
-
 }
 
 
@@ -370,3 +378,5 @@ object BadRegistry {
         }
     }
 }
+
+
