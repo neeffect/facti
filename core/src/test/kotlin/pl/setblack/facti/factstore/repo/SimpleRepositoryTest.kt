@@ -26,7 +26,7 @@ internal class SimpleRepositoryTest : DescribeSpec({
         val clock = Clock.fixed(initialTime.atZone(timeZone.toZoneId()).toInstant(), timeZone.toZoneId())
         val tmpDir = Files.createTempDirectory("facti-repo-test")
         val tasksHandler = SimpleTaskHandler()
-        val factStore = FileFactStore<String, AccountFact>(tmpDir, clock, tasksHandler , identity)
+        val factStore = FileFactStore<String, AccountFact>(tmpDir, clock, tasksHandler , idFromString = identity)
         val snapshotStore = FileSnapshotStore<String, SimpleAccount>(tmpDir, clock, tasksHandler)
 
         val simpleRepository = SimpleRepository(

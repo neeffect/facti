@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.TreeNode
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.vavr.control.Option
+import pl.setblack.facti.factstore.DevNull
 import pl.setblack.facti.factstore.Fact
+import pl.setblack.facti.factstore.ReadSideProcessor
 import pl.setblack.facti.factstore.repo.FactStore
 import pl.setblack.facti.factstore.repo.LoadedFact
 import pl.setblack.facti.factstore.repo.SavedFact
@@ -25,12 +27,16 @@ import java.util.function.Consumer
 
 /**
  * TODO -  not tests for flushing stream events upon shutdown()
+ *
+ * TODO - simplyfy readSidee, remove idfact, olny readSide per one aggregate supported, introduce concept of
+ * sending facts to uuper factstore
  */
 class FileFactStore<ID, FACT : Fact<*>>(
         basePath: Path,
         clock: Clock,
         tasksHandler: TasksHandler,
-        val idFromString : (String)-> ID) : DirBasedStore<ID, EventDir>
+        val readSide: ReadSideProcessor<ID, FACT, Unit> = DevNull(),
+        val idFromString: (String) -> ID) : DirBasedStore<ID, EventDir>
 (basePath, clock, tasksHandler), FactStore<ID, FACT, Unit> {
     private val initial = EventDir()
 
@@ -38,9 +44,13 @@ class FileFactStore<ID, FACT : Fact<*>>(
     override fun persist(id: ID, ev: FACT): Mono<SavedFact<Unit>> = Mono.defer {
         ensureEventWriter(id).flatMap { writableStore ->
             //val eventString = mapper.writeValueAsString(ev)
-            val factNode : JsonNode= mapper.valueToTree(ev)
+            val factNode: JsonNode = mapper.valueToTree(ev)
             val eventClass = ev.javaClass.name
             tryWrite(id, factNode, eventClass, 25, writableStore.state, writableStore.eventWriter)
+                    .map {
+                        readSide.processFact(id, ev, it)
+                        it
+                    }
         }
     }
 
@@ -108,8 +118,8 @@ class FileFactStore<ID, FACT : Fact<*>>(
     }
 
     override fun loadAll(lastFact: Unit): Flux<LoadedFact<ID, FACT>> {
-        val directories =  Files.newDirectoryStream(basePath) {
-            path -> Files.isDirectory(path)
+        val directories = Files.newDirectoryStream(basePath) { path ->
+            Files.isDirectory(path)
 
         }
         val factStream = directories.map {
@@ -249,7 +259,6 @@ class FileFactStore<ID, FACT : Fact<*>>(
         }
 
     }
-
 
 
     private fun writeData(writer: Writer, capsule: FactCapsule) {

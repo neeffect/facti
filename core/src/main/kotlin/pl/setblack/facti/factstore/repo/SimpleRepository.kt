@@ -24,8 +24,10 @@ class SimpleRepository<ID, STATE, FACT : Fact<STATE>, IDFACT>(
         private val creator: (ID) -> STATE,
         private val factStore: FactStore<ID, FACT, IDFACT>,
         private val snapshotStore: SnapshotStore<ID, STATE>,
-        private val tasksHandler: TasksHandler
+        private val ioJobHandler: TasksHandler
 ) : Repository<ID, STATE, FACT>, DirectControl {
+
+
 
     private val objects = ConcurrentHashMap<ID, Aggregate<STATE>>()
 
@@ -56,7 +58,7 @@ class SimpleRepository<ID, STATE, FACT : Fact<STATE>, IDFACT>(
         return aggregateOp.flatMap { aggregate ->
             val dataToSave = SnapshotData(aggregate.state)
 
-            tasksHandler.putIOTask<STATE>(java.lang.String.valueOf(id)) { completableFuture ->
+            ioJobHandler.putIOTask<STATE>(java.lang.String.valueOf(id)) { completableFuture ->
                 val locked = aggregate.rollLock.tryLock()
                 if (locked) {
                     try {
@@ -232,7 +234,7 @@ class SimpleFileRepositoryFactory<ID, STATE : Any, FACT : Fact<STATE>>(
     fun create(): Repository<ID, STATE, FACT> {
         val tasksHandler = SimpleTaskHandler(3)
 
-        val factStore = FileFactStore<ID, FACT>(basePath, clock, tasksHandler,   idFromString)
+        val factStore = FileFactStore<ID, FACT>(basePath, clock, tasksHandler,   idFromString = idFromString)
         val snapshotStore = FileSnapshotStore<ID, STATE>(basePath, clock, tasksHandler)
 
         return SimpleRepository(
