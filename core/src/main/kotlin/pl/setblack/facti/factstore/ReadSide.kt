@@ -1,31 +1,22 @@
 package pl.setblack.facti.factstore
 
-import io.vavr.collection.List
-import io.vavr.control.Either
-import io.vavr.control.Option
+import pl.setblack.facti.factstore.repo.FactStore
 import pl.setblack.facti.factstore.repo.SavedFact
+import reactor.core.publisher.Mono
+import java.util.concurrent.ConcurrentHashMap
 
-interface ReadSide<ID,  FACT : Fact<*>> {
-
-    fun processFact( id: ID, fact : FACT ) : Unit
-
-    //fun recoverLastGlobalFactId() : Option<IDFACT>
-
-    //fun recoverLastAggregateFact(id : ID) : Option<Long>
-
+interface ReadSide<ID, P> {
+    fun recentProjection(id : ID) : Mono<ProjectionCapsule<P>>
 }
 
+data class ProjectionCapsule<P>(val projection : P, val lastFactId :  Long)
+
+//TODO I thinkt IDFACT should be removed
 interface ReadSideProcessor <ID, FACT : Fact<*>, IDFACT > {
-
     fun processFact( id: ID, fact : FACT, saved  : SavedFact<IDFACT> ) : Unit
-
 }
 
-data class ReadSides<ID, FACT : Fact<*>>( private val  readSides : List<ReadSide<ID, FACT>>) {
 
-    fun withReadSide( readSide : ReadSide<ID,FACT> ) = this.copy(readSides= readSides.prepend(readSide))
-
-}
 
 
 class DevNull<ID, FACT : Fact<*>, IDFACT >  :  ReadSideProcessor<ID, FACT, IDFACT> {
@@ -33,3 +24,20 @@ class DevNull<ID, FACT : Fact<*>, IDFACT >  :  ReadSideProcessor<ID, FACT, IDFAC
 
 }
 
+class InMemoryReadSide<ID, P, FACT : Fact<*>>
+    ( private val factStore: FactStore<ID, FACT, Unit>,
+      private val projector : (ID, P, FACT) -> Mono<P> ) : ReadSide<ID, P>, ReadSideProcessor<ID, FACT, Unit> {
+
+
+    override fun recentProjection(id: ID): Mono<ProjectionCapsule<P>> {
+        TODO("recentProjection not implemented")
+    }
+
+    private val projections   = ConcurrentHashMap <ID,  ProjectionCapsule<P>>()
+
+    override fun processFact(id: ID, fact: FACT, saved: SavedFact<Unit>) {
+        TODO("processFact not implemented")
+    }
+
+
+}

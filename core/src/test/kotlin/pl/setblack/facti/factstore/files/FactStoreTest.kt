@@ -4,14 +4,13 @@ package pl.setblack.facti.factstore.files
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.DescribeSpec
 import io.vavr.collection.Array
-import io.vavr.collection.Map
 import io.vavr.collection.HashMap
+import io.vavr.collection.Map
 import pl.setblack.facti.factstore.Fact
-import pl.setblack.facti.factstore.ReadSide
 import pl.setblack.facti.factstore.ReadSideProcessor
-import pl.setblack.facti.factstore.bank.simplified.MoneyTransfered
 import pl.setblack.facti.factstore.bank.simplified.AccountFact
 import pl.setblack.facti.factstore.bank.simplified.InitialTransfer
+import pl.setblack.facti.factstore.bank.simplified.MoneyTransfered
 import pl.setblack.facti.factstore.bank.simplified.identity
 import pl.setblack.facti.factstore.file.FileFactStore
 import pl.setblack.facti.factstore.repo.SavedFact
@@ -25,7 +24,6 @@ import java.time.Clock
 import java.time.LocalDateTime
 import java.util.*
 import java.util.concurrent.atomic.AtomicReference
-
 
 
 internal class FactStoreTest : DescribeSpec({
@@ -137,36 +135,38 @@ internal class FactStoreTest : DescribeSpec({
 
 
     }
+    /*
+           //READ side moved to Repository
+       describe("for a fact store with a read side ") {
+           val timeZone = TimeZone.getTimeZone("GMT+0:00")
+           val initialTime = LocalDateTime.parse("2018-10-01T10:00")
+           val clock = Clock.fixed(initialTime.atZone(timeZone.toZoneId()).toInstant(), timeZone.toZoneId())
+           val tmpDir = Files.createTempDirectory("facti-filestore-test")
+           val tasksHandler = SimpleTaskHandler()
+           val readSide = ObjReadSide(::processBankFacts, AllAccounts() )
+           val factStore = FileFactStore<String, AccountFact>(tmpDir, clock, tasksHandler, idFromString = identity)
 
-    describe("for a fact store with a read side ") {
-        val timeZone = TimeZone.getTimeZone("GMT+0:00")
-        val initialTime = LocalDateTime.parse("2018-10-01T10:00")
-        val clock = Clock.fixed(initialTime.atZone(timeZone.toZoneId()).toInstant(), timeZone.toZoneId())
-        val tmpDir = Files.createTempDirectory("facti-filestore-test")
-        val tasksHandler = SimpleTaskHandler()
-        val readSide = ObjReadSide(::processBankFacts, AllAccounts() )
-        val factStore = FileFactStore<String, AccountFact>(tmpDir, clock, tasksHandler, readSide, idFromString = identity)
 
-        context("read side") {
-            factStore.deleteAll()
+           context("read side") {
+               factStore.deleteAll()
 
-            val events1 = Array.range(0, 10)
-                    .map { MoneyTransfered(BigDecimal.valueOf(it.toLong()), otherAccountId) }
-                    .map { factStore.persist(mainAccountId, it) }
-                    .map { it.toFlux() }
-            val persisted = Flux.concat(events1)
-            it("should process all read side facts for a single aggregate") {
-                persisted.blockLast()
-                readSide.getObject().transfers shouldBe 10
-            }
+               val events1 = Array.range(0, 10)
+                       .map { MoneyTransfered(BigDecimal.valueOf(it.toLong()), otherAccountId) }
+                       .map { factStore.persist(mainAccountId, it) }
+                       .map { it.toFlux() }
+               val persisted = Flux.concat(events1)
+               it("should process all read side facts for a single aggregate") {
+                   persisted.blockLast()
+                   readSide.getObject().transfers shouldBe 10
+               }
 
-            it("should restore read side if it is deleted") {
-                TODO("maybe move this test to ReadSideProcessor")
+               it("should restore read side if it is deleted") {
+                   TODO("maybe move this test to ReadSideProcessor")
 
-            }
-        }
+               }
+           }
 
-    }
+    }*/
 })
 
 data class AllAccounts(val accounts: Map<String, AccountSum> = HashMap.empty(), val transfers: Long = 0) {

@@ -35,7 +35,7 @@ class FileFactStore<ID, FACT : Fact<*>>(
         basePath: Path,
         clock: Clock,
         tasksHandler: TasksHandler,
-        val readSide: ReadSideProcessor<ID, FACT, Unit> = DevNull(),
+
         val idFromString: (String) -> ID) : DirBasedStore<ID, EventDir>
 (basePath, clock, tasksHandler), FactStore<ID, FACT, Unit> {
     private val initial = EventDir()
@@ -47,10 +47,10 @@ class FileFactStore<ID, FACT : Fact<*>>(
             val factNode: JsonNode = mapper.valueToTree(ev)
             val eventClass = ev.javaClass.name
             tryWrite(id, factNode, eventClass, 25, writableStore.state, writableStore.eventWriter)
-                    .map {
+                    /*.map {
                         readSide.processFact(id, ev, it)
                         it
-                    }
+                    }*/
         }
     }
 
