@@ -8,9 +8,9 @@ import reactor.core.publisher.Mono
  * Definition for every factstore.
  */
 interface FactStore<ID, FACT: Fact <*>, IDFACT> {
-    fun persist(id: ID, ev: FACT): Mono<SavedFact<IDFACT>>
+    fun persist(id: ID, ev: FACT): Mono<SavedFact<FACT, IDFACT>>
 
-    fun loadFacts(id: ID, offset: Long): Flux<FACT>
+    fun loadFacts(id: ID, offset: Long): Flux<SavedFact<FACT, IDFACT>>
 
     fun roll(id: ID): Mono<Long>
 
@@ -27,7 +27,7 @@ interface SnapshotStore<ID, STATE> {
     fun snapshot(id: ID, state: SnapshotData<STATE>): Mono<SavedState<STATE>>
 }
 
-data class SavedFact<IDFACT>(val thisFactIndex: Long, val idFact :IDFACT)
+data class SavedFact<FACT, IDFACT>(val thisFactIndex: Long, val idFact :IDFACT, val fact : FACT)
 
 data class SavedState<STATE>(val snapshotIndex: Long, val state: STATE)
 

@@ -14,14 +14,15 @@ import java.util.concurrent.ConcurrentHashMap
 class InMemFactStore<ID, FACT: Fact<*>> : FactStore<ID, FACT, Unit> {
     private val allFacts  = ConcurrentHashMap<ID, Facts<FACT>>()
 
-    override fun persist(id: ID, fact: FACT): Mono<SavedFact<Unit>> {
-        val newFacts  = allFacts.compute( id, {id, oldFacts->
-            Option.of(oldFacts).getOrElse(Facts())?.addOne(fact)
-        } )!!
-        return Mono.just(SavedFact<Unit>(newFacts.facts.size().toLong()-1, Unit))
+    override fun persist(id: ID, fact: FACT): Mono<SavedFact<FACT, Unit>> {
+        val newFacts  = allFacts.compute( id) { id, oldFacts->
+            val nonEmptyFacts = Option.of(oldFacts).getOrElse(Facts())
+            nonEmptyFacts?.addOne( fact)
+        }!!
+        return Mono.just(newFacts.lastSaved())
     }
 
-    override fun loadFacts(id: ID, offset: Long): Flux<FACT> {
+    override fun loadFacts(id: ID, offset: Long): Flux<SavedFact<FACT, Unit>> {
         val facts = allFacts.getOrDefault(id, Facts())
         return Flux.fromIterable(facts.facts.subSequence(offset.toInt()))
     }
@@ -35,6 +36,8 @@ class InMemFactStore<ID, FACT: Fact<*>> : FactStore<ID, FACT, Unit> {
     }
 }
 
-internal data class Facts<FACT : Fact<*>> (val facts : List<FACT> = List.empty()) {
-    fun addOne(fact : FACT) = this.copy( facts = this.facts.append(fact))
+internal data class Facts<FACT : Fact<*>> (val facts : List<SavedFact<FACT, Unit>> = List.empty()) {
+    fun addOne(fact : FACT) = this.copy( facts = this.facts.append(SavedFact(facts.size().toLong(), Unit, fact)))
+    fun lastSaved(): SavedFact<FACT, Unit>  = this.facts.last()
+
 }

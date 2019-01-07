@@ -63,7 +63,7 @@ internal class FactStoreTest : DescribeSpec({
             }
             it("should have correct last  event") {
                 StepVerifier.create(restoredFacts.last()).assertNext {
-                    (it as MoneyTransfered).amountDiff shouldBe (BigDecimal.valueOf(2))
+                    (it.fact as MoneyTransfered).amountDiff shouldBe (BigDecimal.valueOf(2))
                 }.verifyComplete()
 
             }
@@ -135,38 +135,7 @@ internal class FactStoreTest : DescribeSpec({
 
 
     }
-    /*
-           //READ side moved to Repository
-       describe("for a fact store with a read side ") {
-           val timeZone = TimeZone.getTimeZone("GMT+0:00")
-           val initialTime = LocalDateTime.parse("2018-10-01T10:00")
-           val clock = Clock.fixed(initialTime.atZone(timeZone.toZoneId()).toInstant(), timeZone.toZoneId())
-           val tmpDir = Files.createTempDirectory("facti-filestore-test")
-           val tasksHandler = SimpleTaskHandler()
-           val readSide = ObjReadSide(::processBankFacts, AllAccounts() )
-           val factStore = FileFactStore<String, AccountFact>(tmpDir, clock, tasksHandler, idFromString = identity)
 
-
-           context("read side") {
-               factStore.deleteAll()
-
-               val events1 = Array.range(0, 10)
-                       .map { MoneyTransfered(BigDecimal.valueOf(it.toLong()), otherAccountId) }
-                       .map { factStore.persist(mainAccountId, it) }
-                       .map { it.toFlux() }
-               val persisted = Flux.concat(events1)
-               it("should process all read side facts for a single aggregate") {
-                   persisted.blockLast()
-                   readSide.getObject().transfers shouldBe 10
-               }
-
-               it("should restore read side if it is deleted") {
-                   TODO("maybe move this test to ReadSideProcessor")
-
-               }
-           }
-
-    }*/
 })
 
 data class AllAccounts(val accounts: Map<String, AccountSum> = HashMap.empty(), val transfers: Long = 0) {
@@ -189,16 +158,5 @@ fun processBankFacts(id: String, fact: AccountFact, obj: AllAccounts): AllAccoun
     is InitialTransfer -> obj.init(id, fact.amount)
 }
 
-class ObjReadSide<ID, FACT : Fact<*>, T>(val processor: (ID, FACT, T) -> T, inital: T) : ReadSideProcessor<ID, FACT, Unit> {
-    private val reference = AtomicReference<T>(inital)
-
-    override fun processFact(id: ID, fact: FACT, saved : SavedFact<Unit>) {
-        reference.updateAndGet {
-            processor(id, fact, it)
-        }
-    }
-
-    fun getObject()  = reference.get()
-}
 
 

@@ -24,7 +24,8 @@ class SimpleRepository<ID, STATE, FACT : Fact<STATE>, IDFACT>(
         private val creator: (ID) -> STATE,
         private val factStore: FactStore<ID, FACT, IDFACT>,
         private val snapshotStore: SnapshotStore<ID, STATE>,
-        private val ioJobHandler: TasksHandler
+        private val ioJobHandler: TasksHandler,
+        private val readSideProcessor: ReadSideProcessor<ID, FACT, IDFACT>
 ) : Repository<ID, STATE, FACT>, DirectControl {
 
 
@@ -92,6 +93,8 @@ class SimpleRepository<ID, STATE, FACT : Fact<STATE>, IDFACT>(
             } else {
                 Flux.empty()
             }
+        }.map {
+            it.fact
         }
     }
 
@@ -241,7 +244,8 @@ class SimpleFileRepositoryFactory<ID, STATE : Any, FACT : Fact<STATE>>(
                 creator,
                 factStore,
                 snapshotStore,
-                tasksHandler
+                tasksHandler,
+                DevNull()
         )
 
     }

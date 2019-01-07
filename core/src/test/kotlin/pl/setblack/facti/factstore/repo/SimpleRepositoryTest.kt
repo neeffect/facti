@@ -4,6 +4,7 @@ package pl.setblack.facti.factstore.repo
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.DescribeSpec
 import io.vavr.collection.Array
+import pl.setblack.facti.factstore.DevNull
 import pl.setblack.facti.factstore.bank.simplified.*
 import pl.setblack.facti.factstore.file.FileFactStore
 import pl.setblack.facti.factstore.file.FileSnapshotStore
@@ -30,7 +31,7 @@ internal class SimpleRepositoryTest : DescribeSpec({
         val snapshotStore = FileSnapshotStore<String, SimpleAccount>(tmpDir, clock, tasksHandler)
 
         val simpleRepository = SimpleRepository(
-                { SimpleAccount(it) }, factStore, snapshotStore, tasksHandler
+                { SimpleAccount(it) }, factStore, snapshotStore, tasksHandler, DevNull()
         )
 
         context("for an empty repo") {
@@ -147,5 +148,37 @@ internal class SimpleRepositoryTest : DescribeSpec({
         }
     }
 
+    /*
+         //READ side moved to Repository
+     describe("for a fact store with a read side ") {
+         val timeZone = TimeZone.getTimeZone("GMT+0:00")
+         val initialTime = LocalDateTime.parse("2018-10-01T10:00")
+         val clock = Clock.fixed(initialTime.atZone(timeZone.toZoneId()).toInstant(), timeZone.toZoneId())
+         val tmpDir = Files.createTempDirectory("facti-filestore-test")
+         val tasksHandler = SimpleTaskHandler()
+         val readSide = ObjReadSide(::processBankFacts, AllAccounts() )
+         val factStore = FileFactStore<String, AccountFact>(tmpDir, clock, tasksHandler, idFromString = identity)
+
+
+         context("read side") {
+             factStore.deleteAll()
+
+             val events1 = Array.range(0, 10)
+                     .map { MoneyTransfered(BigDecimal.valueOf(it.toLong()), otherAccountId) }
+                     .map { factStore.persist(mainAccountId, it) }
+                     .map { it.toFlux() }
+             val persisted = Flux.concat(events1)
+             it("should process all read side facts for a single aggregate") {
+                 persisted.blockLast()
+                 readSide.getObject().transfers shouldBe 10
+             }
+
+             it("should restore read side if it is deleted") {
+                 TODO("maybe move this test to ReadSideProcessor")
+
+             }
+         }
+
+  }*/
 
 })

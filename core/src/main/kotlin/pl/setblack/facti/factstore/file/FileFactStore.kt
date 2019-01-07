@@ -41,12 +41,12 @@ class FileFactStore<ID, FACT : Fact<*>>(
     private val initial = EventDir()
 
     //ook
-    override fun persist(id: ID, ev: FACT): Mono<SavedFact<Unit>> = Mono.defer {
+    override fun persist(id: ID, ev: FACT): Mono<SavedFact<FACT, Unit>> = Mono.defer {
         ensureEventWriter(id).flatMap { writableStore ->
             //val eventString = mapper.writeValueAsString(ev)
             val factNode: JsonNode = mapper.valueToTree(ev)
             val eventClass = ev.javaClass.name
-            tryWrite(id, factNode, eventClass, 25, writableStore.state, writableStore.eventWriter)
+            tryWrite(id, ev, factNode, eventClass, 25, writableStore.state, writableStore.eventWriter)
                     /*.map {
                         readSide.processFact(id, ev, it)
                         it
@@ -55,7 +55,7 @@ class FileFactStore<ID, FACT : Fact<*>>(
     }
 
     override
-    fun loadFacts(id: ID, offset: Long): Flux<FACT> {
+    fun loadFacts(id: ID, offset: Long): Flux<SavedFact<FACT, Unit>> {
         val events = findFolder(id).toFlux().flatMap { aggregatePath ->
             val lastEventCallback = { eventId: Long ->
                 this.aggregates.computeIfPresent(id) { _, oldDirState ->
@@ -66,7 +66,7 @@ class FileFactStore<ID, FACT : Fact<*>>(
                 }
                 Unit
             }
-            val restoredEvents = Flux.generate<FACT>(
+            val restoredEvents = Flux.generate<SavedFact<FACT, Unit>>(
                     EventsReader(lastEventCallback, offset, aggregatePath, mapper))
             restoredEvents
         }
@@ -126,7 +126,7 @@ class FileFactStore<ID, FACT : Fact<*>>(
             val aggrgateFolderName = it.fileName.toString()
             val aggegrateID = idFromString(aggrgateFolderName)
             loadFacts(aggegrateID, 0).map {
-                LoadedFact(aggegrateID, it)
+                LoadedFact(aggegrateID, it.fact)
             }
         }
         return Flux.concat(factStream)
@@ -221,8 +221,8 @@ class FileFactStore<ID, FACT : Fact<*>>(
         }
     }
 
-    private fun tryWrite(id: ID, factNode: JsonNode, eventClass: String, trials: Int, currentState: DirState<EventDir>, writer: Writer): Mono<SavedFact<Unit>> {
-        return this.tasksHandler.putIOTask<SavedFact<Unit>>(idString(id)) { completion ->
+    private fun tryWrite(id: ID, fact : FACT, factNode: JsonNode, eventClass: String, trials: Int, currentState: DirState<EventDir>, writer: Writer): Mono<SavedFact<FACT, Unit>> {
+        return this.tasksHandler.putIOTask<SavedFact<FACT, Unit>>(idString(id)) { completion ->
             val eventId = currentState.dirdata.nextEventNumber
 
             val newState = currentState.copy(
@@ -236,7 +236,7 @@ class FileFactStore<ID, FACT : Fact<*>>(
                     if (replaced) {
                         val capsule = FactCapsule(eventId, clock.instant(), factNode, eventClass)
                         writeData(writer, capsule)
-                        completion.complete(SavedFact(eventId, Unit))
+                        completion.complete(SavedFact(eventId, Unit, fact))
                         return@putIOTask
                     } else {
                         //println("small disaster for ${id} @ ${trials}")
@@ -249,7 +249,7 @@ class FileFactStore<ID, FACT : Fact<*>>(
             }
             if (trials > 0) {
                 ensureEventWriter(id).flatMap { writable ->
-                    tryWrite(id, factNode, eventClass, trials - 1, writable.state, writable.eventWriter)
+                    tryWrite(id, fact, factNode, eventClass, trials - 1, writable.state, writable.eventWriter)
                 }.subscribe({ res -> completion.complete(res) }, { completion.completeExceptionally(it) })
             } else {
                 completion.completeExceptionally(RuntimeException("too many trials to save ${id}"))
@@ -296,7 +296,7 @@ internal class InitialState<EVENT>(
         mapper: ObjectMapper,
         nextEventId: Long
 ) : InternalState<EVENT>(lastEventMark, aggrPath, mapper, nextEventId) {
-    override fun next(sink: SynchronousSink<EVENT>): Option<InternalState<EVENT>> {
+    override fun next(sink: SynchronousSink<SavedFact<EVENT,Unit>>): Option<InternalState<EVENT>> {
         val fileName = eventFileSuffix(nextEventId)
         val readEventsFile = aggrPath.resolve(fileName)
         return if (Files.exists(readEventsFile)) {
@@ -316,7 +316,7 @@ internal class FileOpened<EVENT>(
         nextEventId: Long,
         private val reader: BufferedReader
 ) : InternalState<EVENT>(lastEventMark, aggrPath, mapper, nextEventId) {
-    override fun next(sink: SynchronousSink<EVENT>): Option<InternalState<EVENT>> =
+    override fun next(sink: SynchronousSink<SavedFact<EVENT,Unit>>): Option<InternalState<EVENT>> =
             readNextLine(sink, reader)
 
 }
@@ -327,13 +327,13 @@ internal class EventsReader<EVENT>(
         private val lastEventMark: LastEventCallback,
         private val nextEventId: Long,
         private val aggrPath: Path,
-        private val mapper: ObjectMapper) : Consumer<SynchronousSink<EVENT>> {
+        private val mapper: ObjectMapper) : Consumer<SynchronousSink<SavedFact<EVENT,Unit>>> {
 
     var state = Option.of(init())
 
     private fun init(): InternalState<EVENT> = InitialState(lastEventMark, aggrPath, mapper, nextEventId)
 
-    override fun accept(sink: SynchronousSink<EVENT>) {
+    override fun accept(sink: SynchronousSink<SavedFact<EVENT,Unit>>) {
         state = state.flatMap { it.next(sink) }
     }
 }
@@ -344,16 +344,17 @@ internal sealed class InternalState<EVENT>(
         private val mapper: ObjectMapper,
         protected val nextEventId: Long
 ) {
-    abstract fun next(sink: SynchronousSink<EVENT>): Option<InternalState<EVENT>>
+    abstract fun next(sink: SynchronousSink<SavedFact<EVENT,Unit>>): Option<InternalState<EVENT>>
 
     @Suppress("UNCHECKED_CAST")
-    protected fun readNextLine(sink: SynchronousSink<EVENT>, reader: BufferedReader): Option<InternalState<EVENT>> {
+    protected fun readNextLine(sink: SynchronousSink<SavedFact<EVENT,Unit>>, reader: BufferedReader): Option<InternalState<EVENT>> {
         var line = reader.readLine()
         return if (line != null) {
             val capsule = mapper.readValue(line, FactCapsule::class.java)
             var eventClass = Class.forName(capsule.eventClass)
             val fact = mapper.treeToValue(capsule.eventContent as TreeNode, eventClass) as EVENT
-            sink.next(fact)
+            val saved = SavedFact( capsule.eventId, Unit, fact)
+            sink.next(saved)
             Option.of(FileOpened(lastEventMark, aggrPath, mapper, capsule.eventId + 1, reader))
         } else {
             lastEventMark(nextEventId)
