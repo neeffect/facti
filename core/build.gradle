@@ -14,7 +14,7 @@ buildscript {
 
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.3.0'
-
+    id 'maven-publish'
 }
 
 apply plugin: 'org.jetbrains.dokka'
@@ -25,6 +25,7 @@ version '0.0.1-SNAPSHOT'
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
@@ -61,4 +62,16 @@ compileKotlin {
 
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'pl.setblack'
+            artifactId = 'airomem-facti'
+            version = '0.9.0-SNAPSHOT'
+
+            from components.java
+        }
+    }
 }

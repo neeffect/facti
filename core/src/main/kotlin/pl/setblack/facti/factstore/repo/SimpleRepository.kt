@@ -28,8 +28,6 @@ class SimpleRepository<ID, STATE, FACT : Fact<STATE>, IDFACT>(
         private val readSideProcessor: ReadSideProcessor<ID, FACT, IDFACT>
 ) : Repository<ID, STATE, FACT>, DirectControl {
 
-
-
     private val objects = ConcurrentHashMap<ID, Aggregate<STATE>>()
 
     override fun <R> execute(id: ID, command: Command<STATE, FACT, R>): Flux<R> {
