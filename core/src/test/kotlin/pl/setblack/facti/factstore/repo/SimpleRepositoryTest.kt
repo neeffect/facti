@@ -31,7 +31,12 @@ internal class SimpleRepositoryTest : DescribeSpec({
         val snapshotStore = FileSnapshotStore<String, SimpleAccount>(tmpDir, clock, tasksHandler)
 
         val simpleRepository = SimpleRepository(
-                { SimpleAccount(it) }, factStore, snapshotStore, tasksHandler, DevNull()
+                { SimpleAccount(it) },
+                factStore,
+                snapshotStore,
+                tasksHandler,
+                {state: SimpleAccount, fact : AccountFact -> fact.apply(state)},
+                DevNull()
         )
 
         context("for an empty repo") {

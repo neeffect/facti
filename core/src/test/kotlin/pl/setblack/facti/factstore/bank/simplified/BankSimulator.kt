@@ -126,7 +126,11 @@ fun main(args: Array<String>) {
 
     val tmpDir = Files.createTempDirectory("facti-bank-simulator")
     val simpleRepositoryFactory =
-            SimpleFileRepositoryFactory<String, SimpleAccount, AccountFact>({ id: String -> SimpleAccount(id) }, tmpDir, clock, identity)
+            SimpleFileRepositoryFactory<String, SimpleAccount, AccountFact>({ id: String -> SimpleAccount(id) },
+                    tmpDir,
+                    clock,
+                    {state : SimpleAccount, fact :AccountFact -> fact.apply(state)  },
+                    identity)
 
     val repo = simpleRepositoryFactory.create()
 

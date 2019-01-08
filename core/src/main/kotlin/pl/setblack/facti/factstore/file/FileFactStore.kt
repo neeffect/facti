@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.vavr.control.Option
 import pl.setblack.facti.factstore.DevNull
-import pl.setblack.facti.factstore.Fact
 import pl.setblack.facti.factstore.ReadSideProcessor
 import pl.setblack.facti.factstore.repo.FactStore
 import pl.setblack.facti.factstore.repo.LoadedFact
@@ -31,7 +30,7 @@ import java.util.function.Consumer
  * TODO - simplyfy readSidee, remove idfact, olny readSide per one aggregate supported, introduce concept of
  * sending facts to uuper factstore
  */
-class FileFactStore<ID, FACT : Fact<*>>(
+class FileFactStore<ID, FACT : Any>(
         basePath: Path,
         clock: Clock,
         tasksHandler: TasksHandler,

@@ -6,7 +6,7 @@ import io.kotlintest.specs.DescribeSpec
 import io.vavr.collection.Array
 import io.vavr.collection.HashMap
 import io.vavr.collection.Map
-import pl.setblack.facti.factstore.Fact
+
 import pl.setblack.facti.factstore.ReadSideProcessor
 import pl.setblack.facti.factstore.bank.simplified.AccountFact
 import pl.setblack.facti.factstore.bank.simplified.InitialTransfer

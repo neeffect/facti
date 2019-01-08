@@ -20,11 +20,12 @@ import kotlin.concurrent.withLock
  *
  * Using given factstore, snapshot store.
  */
-class SimpleRepository<ID, STATE, FACT : Fact<STATE>, IDFACT>(
+class SimpleRepository<ID, STATE, FACT : Any, IDFACT>(
         private val creator: (ID) -> STATE,
         private val factStore: FactStore<ID, FACT, IDFACT>,
         private val snapshotStore: SnapshotStore<ID, STATE>,
         private val ioJobHandler: TasksHandler,
+        private val factHandler: (STATE, FACT) -> STATE,
         private val readSideProcessor: ReadSideProcessor<ID, FACT, IDFACT>
 ) : Repository<ID, STATE, FACT>, DirectControl {
 
@@ -184,7 +185,7 @@ class SimpleRepository<ID, STATE, FACT : Fact<STATE>, IDFACT>(
     private fun processSingleTransientFact(id: ID, fact: FACT, defaultState: Aggregate<STATE>): Option<FACT> {
         val before = getAggregate(id, defaultState)
         before.rollLock.withLock {
-            val newState = fact.apply(before.state)
+            val newState = this.factHandler(before.state, fact)
 
             val toStore = before.withState(newState)
             //assert (before.rollLock == toStore.rollLock)
@@ -226,10 +227,11 @@ data class Aggregate<STATE>(
 /**
  * TODO - use clock by denek
  */
-class SimpleFileRepositoryFactory<ID, STATE : Any, FACT : Fact<STATE>>(
+class SimpleFileRepositoryFactory<ID, STATE : Any, FACT : Any>(
         private val creator: (ID) -> STATE,
         val basePath: Path,
         val clock: Clock,
+        val factHandler : (STATE, FACT)->STATE,
         val idFromString: (String) -> ID) {
 
     fun create(): Repository<ID, STATE, FACT> {
@@ -243,6 +245,7 @@ class SimpleFileRepositoryFactory<ID, STATE : Any, FACT : Fact<STATE>>(
                 factStore,
                 snapshotStore,
                 tasksHandler,
+                factHandler,
                 DevNull()
         )
 

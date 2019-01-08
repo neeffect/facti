@@ -13,17 +13,17 @@ interface ReadSide<ID, P> {
 data class ProjectionCapsule<P>(val projection: P, val lastFactId: Long)
 
 //TODO I thinkt IDFACT should be removed
-interface ReadSideProcessor<ID, FACT : Fact<*>, IDFACT> {
+interface ReadSideProcessor<ID, FACT, IDFACT> {
     fun processFact(id: ID, saved: SavedFact<FACT, IDFACT>): Unit
 }
 
 
-class DevNull<ID, FACT : Fact<*>, IDFACT> : ReadSideProcessor<ID, FACT, IDFACT> {
+class DevNull<ID, FACT, IDFACT> : ReadSideProcessor<ID, FACT, IDFACT> {
     override fun processFact(id: ID, saved: SavedFact<FACT, IDFACT>) = Unit
 
 }
 
-class InMemoryReadSide<ID, P, FACT : Fact<*>>
+class InMemoryReadSide<ID, P, FACT :Any>
 (private val factStore: FactStore<ID, FACT, Unit>,
  private val projector: (ID, Option<P>, FACT) -> P) : ReadSide<ID, P>, ReadSideProcessor<ID, FACT, Unit> {
 

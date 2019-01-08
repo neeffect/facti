@@ -4,7 +4,6 @@ import io.vavr.Tuple
 import io.vavr.Tuple2
 import io.vavr.control.Either
 import pl.setblack.facti.factstore.Command
-import pl.setblack.facti.factstore.Fact
 import pl.setblack.facti.factstore.Query
 import pl.setblack.facti.factstore.Repository
 import pl.setblack.facti.factstore.repo.DirectControl
@@ -53,7 +52,9 @@ class SimpleBank(val  repo : Repository<String, SimpleAccount, AccountFact>) {
 
 
 
-sealed class AccountFact : Fact<SimpleAccount>
+sealed class AccountFact {
+    abstract fun apply(state: SimpleAccount): SimpleAccount
+}
 
 data class MoneyTransfered(val amountDiff: BigDecimal, val otherAccountId: String) : AccountFact() {
     override fun apply(state: SimpleAccount): SimpleAccount =

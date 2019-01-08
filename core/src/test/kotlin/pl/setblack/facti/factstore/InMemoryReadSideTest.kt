@@ -39,8 +39,6 @@ internal class InMemoryReadSideTest : DescribeSpec({
 
 
 
-internal class Acc(val value: Int) : Fact<Int> {
-    override fun apply(state: Int): Int {
-        TODO("apply not implemented")
-    }
+internal class Acc(val value: Int)  {
+
 }

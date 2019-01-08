@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono
  * @param STATE - type of state Object. UserData, Product... Should be immutable!
  * @param FACT - type of  facts on state. Typically implemented as sealed class
  */
-interface Repository<ID, STATE, FACT : Fact<STATE>> {
+interface Repository<ID, STATE, FACT> {
 
     /**
      * Execute command on the aggregate identified by id,
@@ -50,7 +50,7 @@ interface Repository<ID, STATE, FACT : Fact<STATE>> {
  * there may be some facts  from other systems and other commands that are applied in the meantime.
  *
  */
-interface Command<STATE, FACT : Fact<STATE>, R> {
+interface Command<STATE, FACT, R> {
     fun apply(stateBefore: STATE): Tuple2<(STATE) -> Flux<R>, Flux<FACT>>
 }
 
@@ -60,7 +60,7 @@ interface Command<STATE, FACT : Fact<STATE>, R> {
  * Inheritance on command is only provided for simplicity - some implementations
  * may use this as command. Some may have 'faster' path for queries.
  */
-interface Query<STATE, FACT : Fact<STATE>, R> : Command<STATE, FACT, R> {
+interface Query<STATE, FACT, R> : Command<STATE, FACT, R> {
     fun query(stateBefore: STATE): Flux<R>
 
     override fun apply(stateBefore: STATE): Tuple2<(STATE) -> Flux<R>, Flux<FACT>> =
@@ -74,6 +74,7 @@ interface Query<STATE, FACT : Fact<STATE>, R> : Command<STATE, FACT, R> {
  * From initial  state to a new state.
  * Facts should never ever change/ mutate existing state.
  */
-interface Fact<S> {
+/*interface Fact<S> {
     fun apply(state: S): S
-}
+}*/
+

@@ -1,14 +1,13 @@
 package pl.setblack.facti.factstore.repo
 
-import pl.setblack.facti.factstore.Fact
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 /**
  * Definition for every factstore.
  */
-interface FactStore<ID, FACT: Fact <*>, IDFACT> {
-    fun persist(id: ID, ev: FACT): Mono<SavedFact<FACT, IDFACT>>
+interface FactStore<ID, FACT: Any, IDFACT> {
+    fun persist(id: ID, fact: FACT): Mono<SavedFact<FACT, IDFACT>>
 
     fun loadFacts(id: ID, offset: Long): Flux<SavedFact<FACT, IDFACT>>
 
@@ -33,4 +32,4 @@ data class SavedState<STATE>(val snapshotIndex: Long, val state: STATE)
 
 data class SnapshotData<STATE>(val state: STATE, val nextFactSeq: Long = 0)
 
-data class LoadedFact<ID,  FACT : Fact<*>> (val id: ID,  val fact : FACT)
+data class LoadedFact<ID,  FACT> (val id: ID,  val fact : FACT)
