@@ -35,7 +35,7 @@ internal class SimpleRepositoryTest : DescribeSpec({
                 factStore,
                 snapshotStore,
                 tasksHandler,
-                {state: SimpleAccount, fact : AccountFact -> fact.apply(state)},
+                FactHandler{state: SimpleAccount, fact : AccountFact -> fact.apply(state)},
                 DevNull()
         )
 

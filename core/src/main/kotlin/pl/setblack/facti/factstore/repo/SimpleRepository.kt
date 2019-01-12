@@ -1,6 +1,7 @@
 package pl.setblack.facti.factstore.repo
 
 
+import io.vavr.Function2
 import io.vavr.control.Option
 import pl.setblack.facti.factstore.*
 import pl.setblack.facti.factstore.file.FileFactStore
@@ -15,6 +16,10 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
+typealias FactHandler<FACT, STATE >  = Function2<STATE, FACT, STATE>
+
+
+
 /**
  * Simple repository implementation.
  *
@@ -25,7 +30,7 @@ class SimpleRepository<ID, STATE, FACT : Any, IDFACT>(
         private val factStore: FactStore<ID, FACT, IDFACT>,
         private val snapshotStore: SnapshotStore<ID, STATE>,
         private val ioJobHandler: TasksHandler,
-        private val factHandler: (STATE, FACT) -> STATE,
+        private val factHandler: FactHandler<FACT, STATE >,
         private val readSideProcessor: ReadSideProcessor<ID, FACT, IDFACT>
 ) : Repository<ID, STATE, FACT>, DirectControl {
 
@@ -185,7 +190,7 @@ class SimpleRepository<ID, STATE, FACT : Any, IDFACT>(
     private fun processSingleTransientFact(id: ID, fact: FACT, defaultState: Aggregate<STATE>): Option<FACT> {
         val before = getAggregate(id, defaultState)
         before.rollLock.withLock {
-            val newState = this.factHandler(before.state, fact)
+            val newState = this.factHandler.apply(before.state, fact)
 
             val toStore = before.withState(newState)
             //assert (before.rollLock == toStore.rollLock)
@@ -245,7 +250,7 @@ class SimpleFileRepositoryFactory<ID, STATE : Any, FACT : Any>(
                 factStore,
                 snapshotStore,
                 tasksHandler,
-                factHandler,
+                Function2{state, fact -> factHandler(state, fact)},
                 DevNull()
         )
 
