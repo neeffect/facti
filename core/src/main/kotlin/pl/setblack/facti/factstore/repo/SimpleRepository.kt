@@ -234,10 +234,10 @@ data class Aggregate<STATE>(
  */
 class SimpleFileRepositoryFactory<ID, STATE : Any, FACT : Any>(
         private val creator: (ID) -> STATE,
-        val basePath: Path,
-        val clock: Clock,
+        private val basePath: Path,
+        private val clock: Clock,
         val factHandler : (STATE, FACT)->STATE,
-        val idFromString: (String) -> ID) {
+        private val idFromString: (String) -> ID) {
 
     fun create(): Repository<ID, STATE, FACT> {
         val tasksHandler = SimpleTaskHandler(3)
@@ -257,3 +257,24 @@ class SimpleFileRepositoryFactory<ID, STATE : Any, FACT : Any>(
     }
 }
 
+
+class SimpleRepositoryFactory <ID, STATE : Any, FACT : Any>(
+        private val creator: (ID) -> STATE,
+        private val factHandler : (STATE, FACT)->STATE,
+        private val strategy: RepoCreationStrategy)  {
+    fun create(): Repository<ID, STATE, FACT> {
+        val tasksHandler = SimpleTaskHandler(3)
+
+        val factStore = strategy.createFactStore<ID, FACT>()
+        val snapshotStore = strategy.createSnapshotStore<ID, STATE>()
+
+        return SimpleRepository(
+                creator,
+                factStore,
+                snapshotStore,
+                tasksHandler,
+                Function2{state, fact -> factHandler(state, fact)},
+                DevNull()
+        )
+    }
+}

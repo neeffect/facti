@@ -10,8 +10,7 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.concurrent.ConcurrentHashMap
 
-//TODO test  separately
-class InMemFactStore<ID, FACT: Any> : FactStore<ID, FACT, Unit> {
+class InMemoryFactStore<ID, FACT: Any> : FactStore<ID, FACT, Unit> {
     private val allFacts  = ConcurrentHashMap<ID, Facts<FACT>>()
 
     override fun persist(id: ID, fact: FACT): Mono<SavedFact<FACT, Unit>> {
@@ -39,5 +38,4 @@ class InMemFactStore<ID, FACT: Any> : FactStore<ID, FACT, Unit> {
 internal data class Facts<FACT > (val facts : List<SavedFact<FACT, Unit>> = List.empty()) {
     fun addOne(fact : FACT) = this.copy( facts = this.facts.append(SavedFact(facts.size().toLong(), Unit, fact)))
     fun lastSaved(): SavedFact<FACT, Unit>  = this.facts.last()
-
 }
