@@ -12,7 +12,7 @@ class InMemorySnapshotStore<ID, STATE> : SnapshotStore<ID, STATE> {
 
     override fun restore(id: ID, supplier: (ID) -> Mono<STATE>): Mono<SnapshotData<STATE>> =
         this.snapshots.get(id)?.let {
-            Mono.just(it!!)
+            Mono.just(it)
         }  ?:
         supplier(id).map {
                     SnapshotData<STATE>(it, 0)

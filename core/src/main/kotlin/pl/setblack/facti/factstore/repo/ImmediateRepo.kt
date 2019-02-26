@@ -57,10 +57,12 @@ interface ImmediateQuery<STATE, FACT, R> : ImmediateCommand<STATE, FACT, R> {
 
 class ImmediateRepoFactory(private  val strategy: RepoCreationStrategy) {
 
-    fun <ID, STATE : Any,FACT : Any, IDFACT>  create(creator: (ID) -> STATE,
-               factHandler: (STATE, FACT) -> STATE)
+    fun <ID, STATE : Any,FACT : Any, IDFACT>  create(
+            creator: (ID) -> STATE,
+            factHandler: (STATE, FACT) -> STATE,
+            idFromString: (String) -> ID)
                : ImmediateRepo<ID, STATE, FACT, IDFACT> {
-        val simpleRepositoryFactory = SimpleRepositoryFactory(creator, factHandler, strategy)
+        val simpleRepositoryFactory = SimpleRepositoryFactory(creator, factHandler, strategy, idFromString)
         val simpleRepository = simpleRepositoryFactory.create()
         val immediateRepo = ImmediateRepo<ID, STATE, FACT, IDFACT>(simpleRepository)
         return immediateRepo

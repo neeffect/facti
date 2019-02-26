@@ -261,11 +261,12 @@ class SimpleFileRepositoryFactory<ID, STATE : Any, FACT : Any>(
 class SimpleRepositoryFactory <ID, STATE : Any, FACT : Any>(
         private val creator: (ID) -> STATE,
         private val factHandler : (STATE, FACT)->STATE,
-        private val strategy: RepoCreationStrategy)  {
+        private val strategy: RepoCreationStrategy,
+        private val idFromString: (String) -> ID)  {
     fun create(): Repository<ID, STATE, FACT> {
         val tasksHandler = SimpleTaskHandler(3)
 
-        val factStore = strategy.createFactStore<ID, FACT>()
+        val factStore = strategy.createFactStore<ID, FACT>(idFromString)
         val snapshotStore = strategy.createSnapshotStore<ID, STATE>()
 
         return SimpleRepository(
