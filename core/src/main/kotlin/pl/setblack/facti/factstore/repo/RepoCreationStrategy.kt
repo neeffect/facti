@@ -13,7 +13,6 @@ class InMemCreator : RepoCreationStrategy {
     override fun <ID, STATE> createSnapshotStore(): SnapshotStore<ID, STATE> =
         InMemorySnapshotStore<ID, STATE>()
 
-
     override fun <ID, FACT : Any> createFactStore(): FactStore<ID, FACT, Unit>  =
         InMemoryFactStore<ID, FACT>()
 }
