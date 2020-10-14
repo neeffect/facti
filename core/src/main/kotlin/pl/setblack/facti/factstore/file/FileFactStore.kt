@@ -25,10 +25,10 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.function.Consumer
 
 /**
- * TODO -  not tests for flushing stream events upon shutdown()
+ * TODO -  no tests for flushing stream events upon shutdown()
  *
- * TODO - simplyfy readSidee, remove idfact, olny readSide per one aggregate supported, introduce concept of
- * sending facts to uuper factstore
+ * TODO - simplify readSide, remove idfact, olny readSide per one aggregate supported, introduce concept of
+ * sending facts to super factstore
  */
 class FileFactStore<ID, FACT : Any>(
         basePath: Path,
