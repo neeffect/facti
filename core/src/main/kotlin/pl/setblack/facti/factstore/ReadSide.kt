@@ -17,7 +17,6 @@ interface ReadSideProcessor<ID, FACT, IDFACT> {
     fun processFact(id: ID, saved: SavedFact<FACT, IDFACT>): Unit
 }
 
-
 class DevNull<ID, FACT, IDFACT> : ReadSideProcessor<ID, FACT, IDFACT> {
     override fun processFact(id: ID, saved: SavedFact<FACT, IDFACT>) = Unit
 
@@ -42,8 +41,6 @@ class InMemoryReadSide<ID, P, FACT :Any>
             }
         }
     }
-
-
 
     override fun processFact(id: ID, saved: SavedFact<FACT, Unit>) {
         projections.compute(id) { key, oldVal ->

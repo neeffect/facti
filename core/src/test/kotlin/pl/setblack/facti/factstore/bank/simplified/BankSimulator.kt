@@ -1,6 +1,6 @@
 package pl.setblack.facti.factstore.bank.simplified
 
-import com.google.common.base.Preconditions
+import org.junit.jupiter.api.Assertions.assertTrue
 import pl.setblack.facti.factstore.repo.SimpleFileRepositoryFactory
 import reactor.core.publisher.Flux
 import java.math.BigDecimal
@@ -111,7 +111,7 @@ class BankSimulator(
 
         val expected = initAmount.toBigDecimal() * accounts.toBigDecimal()
         println("total amount: ${result}")
-        Preconditions.checkState(expected.setScale(4) == result.setScale(4), "had ${result} expected ${expected}")
+        assertTrue(expected.setScale(4) == result.setScale(4), "had ${result} expected ${expected}")
 
     }
 

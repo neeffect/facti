@@ -1,8 +1,7 @@
 package pl.setblack.facti.factstore.repo
 
-
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.DescribeSpec
+import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.shouldBe
 import io.vavr.collection.Array
 import pl.setblack.facti.factstore.DevNull
 import pl.setblack.facti.factstore.bank.simplified.*

@@ -1,8 +1,8 @@
 package pl.setblack.facti.factstore.files
 
 
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.DescribeSpec
+import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.shouldBe
 import io.vavr.collection.Array
 import io.vavr.collection.HashMap
 import io.vavr.collection.Map

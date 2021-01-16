@@ -1,9 +1,9 @@
 package pl.setblack.facti.factstore.files
 
+import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.shouldBe
 import pl.setblack.facti.factstore.file.FileSnapshotStore
 
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.DescribeSpec
 import pl.setblack.facti.factstore.bank.simplified.SimpleAccount
 import pl.setblack.facti.factstore.repo.SavedState
 import pl.setblack.facti.factstore.repo.SnapshotData

@@ -1,7 +1,8 @@
 package pl.setblack.facti.factstore
 
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.DescribeSpec
+
+import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.shouldBe
 import io.vavr.control.Option
 import pl.setblack.facti.factstore.mem.InMemoryFactStore
 import pl.setblack.facti.factstore.repo.SavedFact

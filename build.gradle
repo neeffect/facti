@@ -1,6 +1,0 @@
-group 'pl.setblack'
-repositories {
-    mavenCentral()
-}
-
-

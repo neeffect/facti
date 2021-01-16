@@ -230,7 +230,7 @@ data class Aggregate<STATE>(
 
 
 /**
- * TODO - use clock by denek
+ *
  */
 class SimpleFileRepositoryFactory<ID, STATE : Any, FACT : Any>(
         private val creator: (ID) -> STATE,
