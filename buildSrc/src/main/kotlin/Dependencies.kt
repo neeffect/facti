@@ -35,9 +35,13 @@ object Libs {
     }
 
     object Reactor {
-        private const val version = "3.3.10.RELEASE"
+        private const val version = "3.4.2"
         const val core = "io.projectreactor:reactor-core:$version"
         const val test = "io.projectreactor:reactor-test:$version"
+        object Kotlin {
+            private const val version = "1.1.2"
+            const val extensions = "io.projectreactor.kotlin:reactor-kotlin-extensions:$version"
+        }
 
     }
 

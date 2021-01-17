@@ -4,7 +4,13 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 /**
- * Definition for every factstore.
+ * Main interface for persisting facts.
+ *
+ *
+ * @param ID  type of identificator of objects
+ * @param FACT type of facts
+ * @param IDFACT  (todo) - save fact ID
+ *
  */
 interface FactStore<ID, FACT: Any, IDFACT> {
     fun persist(id: ID, fact: FACT): Mono<SavedFact<FACT, IDFACT>>
@@ -13,7 +19,7 @@ interface FactStore<ID, FACT: Any, IDFACT> {
 
     fun roll(id: ID): Mono<Long>
 
-    fun loadAll( lastFact : IDFACT) : Flux<LoadedFact<ID, FACT>>
+    fun loadAll(lastFact : IDFACT) : Flux<LoadedFact<ID, FACT>>
 }
 
 /**

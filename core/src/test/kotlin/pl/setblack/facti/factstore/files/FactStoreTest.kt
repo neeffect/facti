@@ -16,7 +16,7 @@ import pl.setblack.facti.factstore.file.FileFactStore
 import pl.setblack.facti.factstore.repo.SavedFact
 import pl.setblack.facti.factstore.util.SimpleTaskHandler
 import reactor.core.publisher.Flux
-import reactor.core.publisher.toFlux
+import reactor.kotlin.core.publisher.toFlux
 import reactor.test.StepVerifier
 import java.math.BigDecimal
 import java.nio.file.Files

@@ -4,6 +4,7 @@ dependencies {
     }
 //    api(Libs.Haste.haste)
     api(Libs.Reactor.core)
+    implementation(Libs.Reactor.Kotlin.extensions)
     implementation(Libs.Vavr.jackson)
     implementation(Libs.Jackson.jacksonModuleKotlin) {
         exclude("org.jetbrains.kotlin")
