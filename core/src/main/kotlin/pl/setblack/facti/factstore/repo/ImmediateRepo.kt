@@ -8,7 +8,7 @@ import pl.setblack.facti.factstore.Query
 import pl.setblack.facti.factstore.Repository
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
-import reactor.core.publisher.toFlux
+import reactor.kotlin.core.publisher.toFlux
 
 class ImmediateRepo<ID, STATE, FACT : Any, IDFACT>(private val simpleRepository: Repository<ID, STATE, FACT>) {
 

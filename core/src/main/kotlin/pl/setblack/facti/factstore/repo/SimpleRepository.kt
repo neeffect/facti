@@ -3,7 +3,11 @@ package pl.setblack.facti.factstore.repo
 
 import io.vavr.Function2
 import io.vavr.control.Option
-import pl.setblack.facti.factstore.*
+import pl.setblack.facti.factstore.Command
+import pl.setblack.facti.factstore.DevNull
+import pl.setblack.facti.factstore.Query
+import pl.setblack.facti.factstore.ReadSideProcessor
+import pl.setblack.facti.factstore.Repository
 import pl.setblack.facti.factstore.file.FileFactStore
 import pl.setblack.facti.factstore.file.FileSnapshotStore
 import pl.setblack.facti.factstore.util.SimpleTaskHandler
@@ -79,7 +83,8 @@ class SimpleRepository<ID, STATE, FACT : Any, IDFACT>(
                         aggregate.rollLock.unlock()
                     }
                 } else {
-                    snapshot(id).subscribe({ completableFuture.complete(it) }, { completableFuture.completeExceptionally(it) })
+                    snapshot(id).subscribe({ completableFuture.complete(it) },
+                        { completableFuture.completeExceptionally(it) })
                 }
             }
 
@@ -205,7 +210,9 @@ class SimpleRepository<ID, STATE, FACT : Any, IDFACT>(
 
     }
 
-    private fun updateTransientAggregate(id: ID, facts: Flux<FACT>, defaultState: Aggregate<STATE>): Mono<Aggregate<STATE>> =
+    private fun updateTransientAggregate(
+        id: ID, facts: Flux<FACT>,
+        defaultState: Aggregate<STATE>): Mono<Aggregate<STATE>> =
             facts.map {
                 processSingleTransientFact(id, it, defaultState)
             }.last(Option.none()).flatMap {

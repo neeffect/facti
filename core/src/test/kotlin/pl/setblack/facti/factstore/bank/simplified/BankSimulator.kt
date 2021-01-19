@@ -120,7 +120,7 @@ class BankSimulator(
 
 }
 
-fun main(args: Array<String>) {
+fun main() {
     println("started")
     val clock = Clock.systemDefaultZone()
 

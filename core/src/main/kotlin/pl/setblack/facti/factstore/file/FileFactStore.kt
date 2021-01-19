@@ -13,7 +13,7 @@ import pl.setblack.facti.factstore.util.TasksHandler
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.core.publisher.SynchronousSink
-import reactor.core.publisher.toFlux
+import reactor.kotlin.core.publisher.toFlux
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.Writer
@@ -39,13 +39,12 @@ class FileFactStore<ID, FACT : Any>(
 (basePath, clock, tasksHandler), FactStore<ID, FACT, Unit> {
     private val initial = EventDir()
 
-    //ook
-    override fun persist(id: ID, ev: FACT): Mono<SavedFact<FACT, Unit>> = Mono.defer {
+    override fun persist(id: ID, fact: FACT): Mono<SavedFact<FACT, Unit>> = Mono.defer {
         ensureEventWriter(id).flatMap { writableStore ->
             //val eventString = mapper.writeValueAsString(ev)
-            val factNode: JsonNode = mapper.valueToTree(ev)
-            val eventClass = ev.javaClass.name
-            tryWrite(id, ev, factNode, eventClass, 25, writableStore.state, writableStore.eventWriter)
+            val factNode: JsonNode = mapper.valueToTree(fact)
+            val eventClass = fact.javaClass.name
+            tryWrite(id, fact, factNode, eventClass, 25, writableStore.state, writableStore.eventWriter)
                     /*.map {
                         readSide.processFact(id, ev, it)
                         it
@@ -220,7 +219,14 @@ class FileFactStore<ID, FACT : Any>(
         }
     }
 
-    private fun tryWrite(id: ID, fact : FACT, factNode: JsonNode, eventClass: String, trials: Int, currentState: DirState<EventDir>, writer: Writer): Mono<SavedFact<FACT, Unit>> {
+    private fun tryWrite(
+        id: ID,
+        fact : FACT,
+        factNode: JsonNode,
+        eventClass: String,
+        trials: Int,
+        currentState: DirState<EventDir>,
+        writer: Writer): Mono<SavedFact<FACT, Unit>> {
         return this.tasksHandler.putIOTask<SavedFact<FACT, Unit>>(idString(id)) { completion ->
             val eventId = currentState.dirdata.nextEventNumber
 

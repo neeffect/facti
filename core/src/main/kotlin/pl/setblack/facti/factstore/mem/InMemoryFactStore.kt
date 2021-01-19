@@ -14,7 +14,7 @@ class InMemoryFactStore<ID, FACT: Any> : FactStore<ID, FACT, Unit> {
     private val allFacts  = ConcurrentHashMap<ID, Facts<FACT>>()
 
     override fun persist(id: ID, fact: FACT): Mono<SavedFact<FACT, Unit>> {
-        val newFacts  = allFacts.compute( id) { id, oldFacts->
+        val newFacts  = allFacts.compute( id) { _, oldFacts->
             val nonEmptyFacts = Option.of(oldFacts).getOrElse(Facts())
             nonEmptyFacts?.addOne( fact)
         }!!

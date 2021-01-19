@@ -14,11 +14,11 @@ data class ProjectionCapsule<P>(val projection: P, val lastFactId: Long)
 
 //TODO I thinkt IDFACT should be removed
 interface ReadSideProcessor<ID, FACT, IDFACT> {
-    fun processFact(id: ID, saved: SavedFact<FACT, IDFACT>): Unit
+    fun processFact(id: ID, saved: SavedFact<FACT, IDFACT>): Mono<Unit>
 }
 
 class DevNull<ID, FACT, IDFACT> : ReadSideProcessor<ID, FACT, IDFACT> {
-    override fun processFact(id: ID, saved: SavedFact<FACT, IDFACT>) = Unit
+    override fun processFact(id: ID, saved: SavedFact<FACT, IDFACT>) = Mono.just(Unit)
 
 }
 
@@ -42,13 +42,14 @@ class InMemoryReadSide<ID, P, FACT :Any>
         }
     }
 
-    override fun processFact(id: ID, saved: SavedFact<FACT, Unit>) {
-        projections.compute(id) { key, oldVal ->
+    override fun processFact(id: ID, saved: SavedFact<FACT, Unit>) =
+        projections.compute(id) { _, oldVal ->
             val newValue = projector(id, Option.of(oldVal).map { it?.projection }, saved.fact)
             ProjectionCapsule(newValue, saved.thisFactIndex)
+        }.let {
+            Mono.just(Unit)
         }
 
-    }
 
 
 }

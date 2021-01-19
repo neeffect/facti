@@ -11,7 +11,7 @@ import reactor.test.StepVerifier
 
 internal class InMemoryReadSideTest : DescribeSpec({
     describe("in memory read side projection") {
-        val accumulator = { x: Int, acc: Option<Int>, fact: Acc ->  acc.getOrElse(0) + fact.value }
+        val accumulator = { _: Int, acc: Option<Int>, fact: Acc ->  acc.getOrElse(0) + fact.value }
 
 
         it ("should process single fact") {
