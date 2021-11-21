@@ -1,0 +1,141 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>CommentSpacing:pl.setblack.facti.factstore.ReadSide.kt:15</ID>
+    <ID>CommentSpacing:pl.setblack.facti.factstore.file.DirBasedStore.kt:36</ID>
+    <ID>CommentSpacing:pl.setblack.facti.factstore.file.DirBasedStore.kt:40</ID>
+    <ID>CommentSpacing:pl.setblack.facti.factstore.file.DirBasedStore.kt:44</ID>
+    <ID>CommentSpacing:pl.setblack.facti.factstore.file.DirBasedStore.kt:45</ID>
+    <ID>CommentSpacing:pl.setblack.facti.factstore.file.DirBasedStore.kt:68</ID>
+    <ID>CommentSpacing:pl.setblack.facti.factstore.file.DirBasedStore.kt:85</ID>
+    <ID>CommentSpacing:pl.setblack.facti.factstore.file.FileFactStore.kt:137</ID>
+    <ID>CommentSpacing:pl.setblack.facti.factstore.file.FileFactStore.kt:153</ID>
+    <ID>CommentSpacing:pl.setblack.facti.factstore.file.FileFactStore.kt:154</ID>
+    <ID>CommentSpacing:pl.setblack.facti.factstore.file.FileFactStore.kt:173</ID>
+    <ID>CommentSpacing:pl.setblack.facti.factstore.file.FileFactStore.kt:190</ID>
+    <ID>CommentSpacing:pl.setblack.facti.factstore.file.FileFactStore.kt:200</ID>
+    <ID>CommentSpacing:pl.setblack.facti.factstore.file.FileFactStore.kt:201</ID>
+    <ID>CommentSpacing:pl.setblack.facti.factstore.file.FileFactStore.kt:207</ID>
+    <ID>CommentSpacing:pl.setblack.facti.factstore.file.FileFactStore.kt:245</ID>
+    <ID>CommentSpacing:pl.setblack.facti.factstore.file.FileFactStore.kt:270</ID>
+    <ID>CommentSpacing:pl.setblack.facti.factstore.file.FileFactStore.kt:365</ID>
+    <ID>CommentSpacing:pl.setblack.facti.factstore.file.FileFactStore.kt:366</ID>
+    <ID>CommentSpacing:pl.setblack.facti.factstore.file.FileFactStore.kt:42</ID>
+    <ID>CommentSpacing:pl.setblack.facti.factstore.file.FileFactStore.kt:72</ID>
+    <ID>CommentSpacing:pl.setblack.facti.factstore.file.FileFactStore.kt:95</ID>
+    <ID>CommentSpacing:pl.setblack.facti.factstore.file.FileSnapshotStore.kt:43</ID>
+    <ID>CommentSpacing:pl.setblack.facti.factstore.file.FileSnapshotStore.kt:80</ID>
+    <ID>CommentSpacing:pl.setblack.facti.factstore.mem.InMemorySnapshotStore.kt:9</ID>
+    <ID>CommentSpacing:pl.setblack.facti.factstore.repo.SimpleRepository.kt:200</ID>
+    <ID>CommentSpacing:pl.setblack.facti.factstore.repo.SimpleRepository.kt:203</ID>
+    <ID>CommentSpacing:pl.setblack.facti.factstore.repo.SimpleRepository.kt:65</ID>
+    <ID>LongParameterList:FileFactStore.kt$FileFactStore$( id: ID, fact: FACT, factNode: JsonNode, eventClass: String, trials: Int, currentState: DirState&lt;EventDir&gt;, writer: Writer)</ID>
+    <ID>MagicNumber:FileFactStore.kt$6</ID>
+    <ID>MagicNumber:FileFactStore.kt$FileFactStore$25</ID>
+    <ID>MagicNumber:FileSnapshotStore.kt$FileSnapshotStore$6</ID>
+    <ID>MagicNumber:SimpleRepository.kt$SimpleFileRepositoryFactory$3</ID>
+    <ID>MagicNumber:SimpleRepository.kt$SimpleRepositoryFactory$3</ID>
+    <ID>MaxLineLength:FileFactStore.kt$FileFactStore$//ensureEventWriter(id).subscribe({ resultPromise.complete(it) }, { resultPromise.completeExceptionally(it) })</ID>
+    <ID>MaxLineLength:FileFactStore.kt$FileFactStore$ensureEventWriter(id).subscribe({ resultPromise.complete(it) }, { resultPromise.completeExceptionally(it) })</ID>
+    <ID>MaxLineLength:FileFactStore.kt$FileFactStore$val</ID>
+    <ID>MaxLineLength:FileFactStore.kt$InternalState$protected</ID>
+    <ID>MaxLineLength:FileSnapshotStore.kt$FileSnapshotStore$/* TODO it was for events only val newStore = store if (aggregates.replace(id, store, newStore)) { Snapshot(savedSnapshot.nextEventId, state) as Snapshot&lt;STATE&gt;//TODO surely adaptation of DirState is missing (replace) } else { TODO("not implemented") }*/</ID>
+    <ID>MaxLineLength:FileSnapshotStore.kt$FileSnapshotStore$private</ID>
+    <ID>MaxLineLength:FileSnapshotStore.kt$FileSnapshotStore$val newStore = oldStore.copy(dirdata = oldStore.dirdata.copy(nextSnapshotNumber = oldStore.dirdata.nextSnapshotNumber + 1))</ID>
+    <ID>MaxLineLength:FileSnapshotStore.kt$FileSnapshotStore$val recentSnapshot = Stream.ofAll(snapshotsStream).maxBy { a, b -&gt; a.fileName.toString().substring(snapshotPrefix.length).compareTo(b.fileName.toString().substring(snapshotPrefix.length)) }</ID>
+    <ID>MaximumLineLength:pl.setblack.facti.factstore.file.FileFactStore.kt:190</ID>
+    <ID>MaximumLineLength:pl.setblack.facti.factstore.file.FileFactStore.kt:204</ID>
+    <ID>MaximumLineLength:pl.setblack.facti.factstore.file.FileFactStore.kt:210</ID>
+    <ID>MaximumLineLength:pl.setblack.facti.factstore.file.FileFactStore.kt:215</ID>
+    <ID>MaximumLineLength:pl.setblack.facti.factstore.file.FileFactStore.kt:353</ID>
+    <ID>MaximumLineLength:pl.setblack.facti.factstore.file.FileSnapshotStore.kt:47</ID>
+    <ID>MaximumLineLength:pl.setblack.facti.factstore.file.FileSnapshotStore.kt:59</ID>
+    <ID>MaximumLineLength:pl.setblack.facti.factstore.file.FileSnapshotStore.kt:71</ID>
+    <ID>NoBlankLineBeforeRbrace:pl.setblack.facti.factstore.ReadSide.kt:22</ID>
+    <ID>NoBlankLineBeforeRbrace:pl.setblack.facti.factstore.ReadSide.kt:52</ID>
+    <ID>NoBlankLineBeforeRbrace:pl.setblack.facti.factstore.Repository.kt:40</ID>
+    <ID>NoBlankLineBeforeRbrace:pl.setblack.facti.factstore.Repository.kt:68</ID>
+    <ID>NoBlankLineBeforeRbrace:pl.setblack.facti.factstore.file.DirBasedStore.kt:73</ID>
+    <ID>NoBlankLineBeforeRbrace:pl.setblack.facti.factstore.file.DirBasedStore.kt:99</ID>
+    <ID>NoBlankLineBeforeRbrace:pl.setblack.facti.factstore.file.FileFactStore.kt:119</ID>
+    <ID>NoBlankLineBeforeRbrace:pl.setblack.facti.factstore.file.FileFactStore.kt:169</ID>
+    <ID>NoBlankLineBeforeRbrace:pl.setblack.facti.factstore.file.FileFactStore.kt:175</ID>
+    <ID>NoBlankLineBeforeRbrace:pl.setblack.facti.factstore.file.FileFactStore.kt:260</ID>
+    <ID>NoBlankLineBeforeRbrace:pl.setblack.facti.factstore.file.FileFactStore.kt:263</ID>
+    <ID>NoBlankLineBeforeRbrace:pl.setblack.facti.factstore.file.FileFactStore.kt:324</ID>
+    <ID>NoBlankLineBeforeRbrace:pl.setblack.facti.factstore.file.FileFactStore.kt:389</ID>
+    <ID>NoBlankLineBeforeRbrace:pl.setblack.facti.factstore.repo.ImmediateRepo.kt:21</ID>
+    <ID>NoBlankLineBeforeRbrace:pl.setblack.facti.factstore.repo.ImmediateRepo.kt:34</ID>
+    <ID>NoBlankLineBeforeRbrace:pl.setblack.facti.factstore.repo.ImmediateRepo.kt:41</ID>
+    <ID>NoBlankLineBeforeRbrace:pl.setblack.facti.factstore.repo.ImmediateRepo.kt:55</ID>
+    <ID>NoBlankLineBeforeRbrace:pl.setblack.facti.factstore.repo.SimpleRepository.kt:129</ID>
+    <ID>NoBlankLineBeforeRbrace:pl.setblack.facti.factstore.repo.SimpleRepository.kt:209</ID>
+    <ID>NoBlankLineBeforeRbrace:pl.setblack.facti.factstore.repo.SimpleRepository.kt:221</ID>
+    <ID>NoBlankLineBeforeRbrace:pl.setblack.facti.factstore.repo.SimpleRepository.kt:262</ID>
+    <ID>NoBlankLineBeforeRbrace:pl.setblack.facti.factstore.repo.SimpleRepository.kt:89</ID>
+    <ID>NoBlankLineBeforeRbrace:pl.setblack.facti.factstore.repo.SimpleRepository.kt:91</ID>
+    <ID>NoBlankLineBeforeRbrace:pl.setblack.facti.factstore.util.TaskHandler.kt:45</ID>
+    <ID>NoConsecutiveBlankLines:pl.setblack.facti.factstore.ReadSide.kt:53</ID>
+    <ID>NoConsecutiveBlankLines:pl.setblack.facti.factstore.Repository.kt:41</ID>
+    <ID>NoConsecutiveBlankLines:pl.setblack.facti.factstore.Repository.kt:44</ID>
+    <ID>NoConsecutiveBlankLines:pl.setblack.facti.factstore.Repository.kt:81</ID>
+    <ID>NoConsecutiveBlankLines:pl.setblack.facti.factstore.file.DirBasedStore.kt:104</ID>
+    <ID>NoConsecutiveBlankLines:pl.setblack.facti.factstore.file.DirBasedStore.kt:27</ID>
+    <ID>NoConsecutiveBlankLines:pl.setblack.facti.factstore.file.DirBasedStore.kt:71</ID>
+    <ID>NoConsecutiveBlankLines:pl.setblack.facti.factstore.file.DirBasedStore.kt:90</ID>
+    <ID>NoConsecutiveBlankLines:pl.setblack.facti.factstore.file.FactCapsule.kt:12</ID>
+    <ID>NoConsecutiveBlankLines:pl.setblack.facti.factstore.file.FileFactStore.kt:261</ID>
+    <ID>NoConsecutiveBlankLines:pl.setblack.facti.factstore.file.FileFactStore.kt:266</ID>
+    <ID>NoConsecutiveBlankLines:pl.setblack.facti.factstore.file.FileFactStore.kt:295</ID>
+    <ID>NoConsecutiveBlankLines:pl.setblack.facti.factstore.file.FileFactStore.kt:373</ID>
+    <ID>NoConsecutiveBlankLines:pl.setblack.facti.factstore.file.FileFactStore.kt:385</ID>
+    <ID>NoConsecutiveBlankLines:pl.setblack.facti.factstore.file.FileFactStore.kt:390</ID>
+    <ID>NoConsecutiveBlankLines:pl.setblack.facti.factstore.file.FileFactStore.kt:395</ID>
+    <ID>NoConsecutiveBlankLines:pl.setblack.facti.factstore.file.FileRepoCreator.kt:14</ID>
+    <ID>NoConsecutiveBlankLines:pl.setblack.facti.factstore.file.FileSnapshotStore.kt:102</ID>
+    <ID>NoConsecutiveBlankLines:pl.setblack.facti.factstore.mem.InMemoryFactStore.kt:32</ID>
+    <ID>NoConsecutiveBlankLines:pl.setblack.facti.factstore.repo.ImmediateRepo.kt:18</ID>
+    <ID>NoConsecutiveBlankLines:pl.setblack.facti.factstore.repo.SimpleRepository.kt:113</ID>
+    <ID>NoConsecutiveBlankLines:pl.setblack.facti.factstore.repo.SimpleRepository.kt:147</ID>
+    <ID>NoConsecutiveBlankLines:pl.setblack.facti.factstore.repo.SimpleRepository.kt:190</ID>
+    <ID>NoConsecutiveBlankLines:pl.setblack.facti.factstore.repo.SimpleRepository.kt:193</ID>
+    <ID>NoConsecutiveBlankLines:pl.setblack.facti.factstore.repo.SimpleRepository.kt:222</ID>
+    <ID>NoConsecutiveBlankLines:pl.setblack.facti.factstore.repo.SimpleRepository.kt:225</ID>
+    <ID>NoConsecutiveBlankLines:pl.setblack.facti.factstore.repo.SimpleRepository.kt:237</ID>
+    <ID>NoConsecutiveBlankLines:pl.setblack.facti.factstore.repo.SimpleRepository.kt:25</ID>
+    <ID>NoConsecutiveBlankLines:pl.setblack.facti.factstore.repo.SimpleRepository.kt:266</ID>
+    <ID>NoConsecutiveBlankLines:pl.setblack.facti.factstore.repo.SimpleRepository.kt:3</ID>
+    <ID>NoConsecutiveBlankLines:pl.setblack.facti.factstore.repo.SimpleRepository.kt:92</ID>
+    <ID>ParameterListWrapping:pl.setblack.facti.factstore.ReadSide.kt:26</ID>
+    <ID>ParameterListWrapping:pl.setblack.facti.factstore.ReadSide.kt:27</ID>
+    <ID>ParameterListWrapping:pl.setblack.facti.factstore.file.DirBasedStore.kt:24</ID>
+    <ID>ParameterListWrapping:pl.setblack.facti.factstore.file.DirBasedStore.kt:83</ID>
+    <ID>ParameterListWrapping:pl.setblack.facti.factstore.file.FactCapsule.kt:10</ID>
+    <ID>ParameterListWrapping:pl.setblack.facti.factstore.file.FileFactStore.kt:227</ID>
+    <ID>ParameterListWrapping:pl.setblack.facti.factstore.file.FileFactStore.kt:283</ID>
+    <ID>ParameterListWrapping:pl.setblack.facti.factstore.file.FileFactStore.kt:284</ID>
+    <ID>ParameterListWrapping:pl.setblack.facti.factstore.file.FileFactStore.kt:288</ID>
+    <ID>ParameterListWrapping:pl.setblack.facti.factstore.file.FileFactStore.kt:333</ID>
+    <ID>ParameterListWrapping:pl.setblack.facti.factstore.file.FileFactStore.kt:36</ID>
+    <ID>ParameterListWrapping:pl.setblack.facti.factstore.file.FileSnapshotStore.kt:20</ID>
+    <ID>ParameterListWrapping:pl.setblack.facti.factstore.repo.ImmediateRepo.kt:63</ID>
+    <ID>ParameterListWrapping:pl.setblack.facti.factstore.repo.SimpleRepository.kt:213</ID>
+    <ID>ParameterListWrapping:pl.setblack.facti.factstore.repo.SimpleRepository.kt:214</ID>
+    <ID>ParameterListWrapping:pl.setblack.facti.factstore.repo.SimpleRepository.kt:229</ID>
+    <ID>ParameterListWrapping:pl.setblack.facti.factstore.repo.SimpleRepository.kt:246</ID>
+    <ID>ParameterListWrapping:pl.setblack.facti.factstore.repo.SimpleRepository.kt:271</ID>
+    <ID>SpacingAroundColon:pl.setblack.facti.factstore.repo.ImmediateRepo.kt:63</ID>
+    <ID>StringTemplate:pl.setblack.facti.factstore.file.FileFactStore.kt:258</ID>
+    <ID>StringTemplate:pl.setblack.facti.factstore.file.FileFactStore.kt:292</ID>
+    <ID>StringTemplate:pl.setblack.facti.factstore.file.FileFactStore.kt:388</ID>
+    <ID>StringTemplate:pl.setblack.facti.factstore.file.FileSnapshotStore.kt:70</ID>
+    <ID>TooGenericExceptionCaught:FileFactStore.kt$FileFactStore$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:TaskHandler.kt$SimpleTaskHandler$e: Exception</ID>
+    <ID>TooManyFunctions:SimpleRepository.kt$SimpleRepository&lt;ID, STATE, FACT : Any, IDFACT&gt; : RepositoryDirectControl</ID>
+    <ID>UnusedPrivateMember:SimpleRepository.kt$SimpleRepository$private val readSideProcessor: ReadSideProcessor&lt;ID, FACT, IDFACT&gt;</ID>
+    <ID>VarCouldBeVal:FileFactStore.kt$InternalState$var eventClass = Class.forName(capsule.eventClass)</ID>
+    <ID>VarCouldBeVal:FileFactStore.kt$InternalState$var line = reader.readLine()</ID>
+    <ID>VarCouldBeVal:FileSnapshotStore.kt$FileSnapshotStore$var storedSnapshot = findLastSnapshotFile(store, aggregatePath)</ID>
+  </CurrentIssues>
+</SmellBaseline>
