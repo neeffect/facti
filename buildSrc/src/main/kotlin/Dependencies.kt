@@ -1,9 +1,9 @@
 object Libs {
-    const val kotlin_version = "1.4.21"
+    const val kotlin_version = "1.5.31"
 
     object Kotlin {
         const val kotlinStdLib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-        private const val coroutinesVersion = "1.4.1"
+        private const val coroutinesVersion = "1.5.2"
         const val coroutinesJdk8 = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$coroutinesVersion"
 
     }
@@ -15,7 +15,7 @@ object Libs {
     }
 
     object Jackson {
-        private const val version = "2.11.3"
+        private const val version = "2.13.0"
         const val jacksonModuleKotlin = "com.fasterxml.jackson.module:jackson-module-kotlin:$version"
         const val jacksonAnnotations = "com.fasterxml.jackson.core:jackson-annotations:$version"
         const val jdk8 = "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:$version"
@@ -35,7 +35,7 @@ object Libs {
     }
 
     object Reactor {
-        private const val version = "3.4.2"
+        private const val version = "3.4.12"
         const val core = "io.projectreactor:reactor-core:$version"
         const val test = "io.projectreactor:reactor-test:$version"
         object Kotlin {
